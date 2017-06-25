@@ -18,8 +18,10 @@ class CreateApplicationsTable extends Migration
             $table->integer('user_id');
             $table->date('begin_date');
             $table->integer('days_num');
+            $table->integer('used_days')->nullable();
             $table->string('comment');
             $table->timestamps();
+            
         });
     }
 
@@ -30,6 +32,6 @@ class CreateApplicationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('applications');
+        Schema::dropIfExists('holidays');
     }
 }

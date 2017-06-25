@@ -16,9 +16,11 @@ class CreateStateApplicationsTable extends Migration
         Schema::create('status_holidays', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('holiday_id');
-            $table->integer('head_id'); // user_id
+            $table->integer('head_id')->comment('user_id from users');
             $table->boolean('holiday_status')->default(true);
-            $table->timestamps(); // TODO только дата создания
+            $table->timestamp('created_at');
+            
+            //$table->foreign('holiday_id')->references('id')->on('holidays')->onDelete('restrict');
         });
     }
 
@@ -29,6 +31,6 @@ class CreateStateApplicationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('state_applications');
+        Schema::dropIfExists('status_holidays');
     }
 }

@@ -20,7 +20,7 @@ class CreateSystemParametersTable extends Migration
             $table->integer('min_leave');
             $table->integer('max_leave');
             $table->date('valid_until')->nullable(); 
-            $table->timestamps(); // TODO только создания, используется последняя
+            $table->timestamp('created_at');
         });
     }
 

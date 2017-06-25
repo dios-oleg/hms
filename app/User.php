@@ -15,7 +15,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'first_name', 'last_name', 'patronymic', 'last_name_print', 'address', 
+        'comment', 'email', 'password', 'position_id', 'head',
     ];
 
     /**
@@ -26,4 +27,36 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+    
+    public function holiday()
+    {
+        return $this->hasMany('App\Holiday');
+    }
+    
+    public function position()
+    {
+        return $this->belongsTo('App\Position');
+    }
+    
+    public function setHead() {
+        $this->head = true;
+        $this->save();
+    }
+    
+    public function unsetHead() {
+        $this->head = false;
+        $this->save();
+    }
+    
+    public function setBlock($comment = null) {
+        $this->blocked = true;
+        $this->comment = $comment; // TODO or delete because is fillable
+        $this->save();
+    }
+    
+    public function unsetBlock() {
+        $this->blocked = false;
+        $this->comment = null;
+        $this->save();
+    }
 }
