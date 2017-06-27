@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+//use Illuminate\Support\Facades\Auth;
 use App\Position;
 use Mail;
 
@@ -17,15 +17,19 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::paginate(2); // change to 10
+
+        if ($request->user()->can('is-head')) {
+            $users = User::paginate(2); // TODO change to 10
+            $search['email'] = request('email');
+            $search['position'] = request('position');
+            $search['sort'] = request('sort');
+            $search['order'] = request('order');
+            $positions = Position::all();
+            
+            return view('user.index', compact('users', 'search', 'positions'));
+        }
         
-        $search['email'] = request('email');
-        $search['position'] = request('position');
-        $search['sort'] = request('sort');
-        $search['order'] = request('order');
-        $positions = Position::all();
-        //эту страницу не может вызвать пользователь, только edit, под другой ссылкой
-        return view('user.index', compact('users', 'search', 'positions'));
+        //abort(403);
     }
 
     /**
@@ -79,9 +83,9 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {
-        if( isset($user) ) $user = Auth::user();
+        if( isset($user) ) $user = $request->user();
         
         return $user;
     }
