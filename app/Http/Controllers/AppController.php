@@ -9,9 +9,9 @@ use App\Position;
 
 class AppController extends Controller
 {
-    public function index() {
+    public function index(Request $request) {
         if (Auth::check())  {
-            if(Auth::user()->head) {
+            if($request->user()->can('is-head')) {
                 return ('dashbord-boss'); // TODO один путь, но разные страницы
                 //return view('dashbord.head);
             }
@@ -19,12 +19,12 @@ class AppController extends Controller
             return ('dashbord-user'); // TODO один путь но разные страницы
             //return view('dashbord.user);
         }
-        elseif (User::where('head', 1)->count() == 0) {
+        elseif (User::where('head', 1)->count() == 0) { // TODO можно в модель
             // TODO не должно быть в заголовке логин и регистрации
             
-            //передать существующие должности если они есть
+            $positions = Position::all();
             
-            return view('auth.first');
+            return view('auth.first', compact('positions'));
         }
         
         return redirect('login');

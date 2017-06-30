@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Enum\Roles;
 
 class User extends Authenticatable
 {
@@ -16,7 +17,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'first_name', 'last_name', 'patronymic', 'last_name_print', 'address', 
-        'comment', 'email', 'password', 'position_id', 'head',
+        'comment', 'email', 'password', 'position_id',
     ];
 
     /**
@@ -30,33 +31,16 @@ class User extends Authenticatable
     
     public function holiday()
     {
-        return $this->hasMany('App\Holiday');
+        return $this->hasMany(\App\Models\Holiday::class);
     }
     
     public function position()
     {
-        return $this->belongsTo('App\Position');
+        return $this->belongsTo(\App\Models\Position::class);
     }
     
-    public function setHead() {
-        $this->head = true;
-        $this->save();
-    }
-    
-    public function unsetHead() {
-        $this->head = false;
-        $this->save();
-    }
-    
-    public function setBlock($comment = null) {
-        $this->blocked = true;
-        $this->comment = $comment; // TODO or delete because is fillable
-        $this->save();
-    }
-    
-    public function unsetBlock() {
-        $this->blocked = false;
-        $this->comment = null;
-        $this->save();
-    }
+    /*public function scopeActive($query) 
+    {
+        return $query->where->('is_block', 1);
+    }*/
 }

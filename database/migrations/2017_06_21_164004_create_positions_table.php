@@ -15,11 +15,8 @@ class CreatePositionsTable extends Migration
     {
         Schema::create('positions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('name_print');
-            $table->integer('priority');
-            $table->integer('days_holiday')->default(24);
-            $table->timestamps();
         });
     }
 

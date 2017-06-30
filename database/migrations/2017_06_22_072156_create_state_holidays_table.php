@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Enum\StateHoliday;
 
-class CreateStateApplicationsTable extends Migration
+class CreateStateHolidaysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,12 +16,10 @@ class CreateStateApplicationsTable extends Migration
     {
         Schema::create('status_holidays', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('holiday_id');
-            $table->integer('head_id')->comment('user_id from users');
-            $table->boolean('holiday_status')->default(true);
+            $table->integer('holiday_id')->index();
+            $table->integer('user_id')->index();
+            $table->enum('new_state', StateHoliday::getConstants());
             $table->timestamp('created_at');
-            
-            //$table->foreign('holiday_id')->references('id')->on('holidays')->onDelete('restrict');
         });
     }
 

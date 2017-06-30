@@ -15,11 +15,8 @@ class CreateSystemParametersTable extends Migration
     {
         Schema::create('system_parameters', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name_organization');
-            $table->string('fullname_director');
-            $table->integer('min_leave');
-            $table->integer('max_leave');
-            $table->date('valid_until')->nullable(); 
+            $table->string('key')->unique();
+            $table->string('value');
             $table->timestamp('created_at');
         });
     }
