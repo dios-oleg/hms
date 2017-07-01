@@ -5,7 +5,8 @@ namespace App\Providers;
 //use Illuminate\Support\Facades\Gate as GateContract;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use App\User;
+use App\Models\User;
+use App\Enum\Roles;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -27,8 +28,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies($gate);
         
-        $gate->define('is-head', function ($user) {
-            return $user->head == 1;
+        $gate->define('is-leader', function ($user) {
+            return $user->role == Roles::LEADER;
         });
     }
 }

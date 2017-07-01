@@ -4,22 +4,27 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\User;
-use App\Position;
+use App\Models\User;
+use App\Models\Position;
+use App\Enum\Roles;
 
 class AppController extends Controller
 {
     public function index(Request $request) {
         if (Auth::check())  {
-            if($request->user()->can('is-head')) {
-                return ('dashbord-boss'); // TODO один путь, но разные страницы
-                //return view('dashbord.head);
+            // Для каждой роли свой dashboard
+            return view('dashboard.'.Auth()->user()->role);
+            
+            
+            // Для руководителя отдельный dashboard
+            /*if(Auth()->user()->can('is-leader')) {
+                return view('dashboard.leader');
             }
             
-            return ('dashbord-user'); // TODO один путь но разные страницы
-            //return view('dashbord.user);
+            return view('dashboard.employee');
+            */
         }
-        elseif (User::where('head', 1)->count() == 0) { // TODO можно в модель
+        elseif (User::isUndefinedLeader()) {
             // TODO не должно быть в заголовке логин и регистрации
             
             $positions = Position::all();
@@ -31,11 +36,10 @@ class AppController extends Controller
     }
     
     public function first(Request $request) {
-        // еще раз проверка и только потом добавление
+        // TODO если был передан id, то не добавление, а запись ID
         $position = Position::create([
             'name' => $request->input('position'),
             'name_print' => $request->input('position_print'),
-            'priority' => 1000,
         ]);
         
         
@@ -50,7 +54,7 @@ class AppController extends Controller
            'password' => bcrypt($request->input('password')),
         ]);
     
-        $first_user->setHead();
+        $first_user->role = Roles::LEADER;
         
         // перенаправление на страницу или отображение об успешном добавлении
     }

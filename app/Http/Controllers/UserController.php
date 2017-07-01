@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
-//use Illuminate\Support\Facades\Auth;
-use App\Position;
+use App\Models\Position;
 use Mail;
 
 class UserController extends Controller
@@ -18,7 +17,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
 
-        if ($request->user()->can('is-head')) {
+        if ($request->user()->can('is-leader')) {
             $users = User::paginate(2); // TODO change to 10
             $search['email'] = request('email');
             $search['position'] = request('position');
