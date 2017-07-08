@@ -28,8 +28,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <!-- Authentication Links -->
                 @if (Auth::guest())
-                    <li><a href="{{ route('login') }}">Login</a></li>
-                    <li><a href="{{ route('register') }}">Register</a></li>
+                    <li><a href="{{ route('auth.login') }}">Вход</a></li>
                 @else
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -38,15 +37,24 @@
 
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="{{ route('logout') }}"
+                                <a href="{{ route('users.account') }}">Профиль</a>
+                            </li>
+                            <li>
+                                @if (Auth::user()->can('is-leader'))
+                                    <a href="{{ route('settings') }}">Параметры системы</a>
+                                @endif
+                            </li>
+                            <li>
+                                <!--a href="{{ route('auth.logout') }}"
                                     onclick="event.preventDefault();
                                              document.getElementById('logout-form').submit();">
                                     Logout
-                                </a>
+                                </a-->
 
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                <!--form id="logout-form" action="{{ route('auth.logout') }}" method="POST" style="display: none;">
                                     {{ csrf_field() }}
-                                </form>
+                                </form-->
+                                <a href="{{ route('auth.logout') }}">Выход</a>
                             </li>
                         </ul>
                     </li>

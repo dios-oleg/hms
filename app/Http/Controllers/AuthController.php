@@ -13,11 +13,11 @@ class AuthController extends Controller{
     
     public function authenticate(Request $request) {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember))  {
-            return 'ok';
+            return redirect()->intended('/');
             //return redirect()->intended('/');
         }
         
-        return 'h'; // TODO неверный логин или пароль
+        return 'bad password'; // TODO неверный логин или пароль
     }
     
     public function logout() {
@@ -27,7 +27,8 @@ class AuthController extends Controller{
     }
     
     public function showRegistrationForm() {
-        // TODO view('auth.register');
+        return view('auth.register'); // TODO добавить сюда регистрацию первого пользователя/админа - доступно будет только один раз
+        // TODO убрать метод first из AppController
     }
     
     public function registration() {

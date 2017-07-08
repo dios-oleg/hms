@@ -1,4 +1,9 @@
-<form method="POST" action="{{ route('create-user') }}">
+@extends('layouts.app')
+
+@section('title', 'Новый сотрудник')
+
+@section('content')
+<form method="POST" action="{{ route('users.create') }}">
     {{ csrf_field() }}
     <div>
         <label for="first_name">Имя</label>
@@ -35,3 +40,4 @@
     </div-->
     <input type="submit">
 </form>
+@endsection

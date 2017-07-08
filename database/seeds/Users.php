@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\User;
+use App\Models\User;
 use App\Enum\Roles;
 
 class Users extends Seeder
@@ -39,8 +39,8 @@ class Users extends Seeder
            'role' => Roles::LEADER,
            'position_id' => '2',
            'password' => bcrypt('123456'), 
-           'is_block' => true,
-           'comment' => 'Уволен',
+           /*'is_block' => false,
+           'comment' => 'Уволен',*/
         ]);
     }
 }

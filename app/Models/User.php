@@ -44,6 +44,12 @@ class User extends Authenticatable
         return $query->where('is_block', 0);
     }
     
+    /*public function scopeSearch($query, $email) {
+        return $query->where('email', 'like', '%'.$search['email'].'%');
+            //->where('position_id', $search['position'])
+            //->orderBy($search['sort'], $search['order']);
+    }*/
+    
     static public function isNotLastLeader() {
         return self::active()->where('role', Roles::LEADER)->count() > 1;
     }

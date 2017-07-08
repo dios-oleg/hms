@@ -9,7 +9,7 @@
 
                 <div class="panel-body">
                     You are logged in!
-                    {{ Auth::user()->head }}
+                    {{ Auth::user()->is_head }}
                 </div>
             </div>
         </div>

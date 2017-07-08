@@ -21,35 +21,37 @@
 
 Route::get('/', 'AppController@index')->name('app');
 
-Route::group(['middleware' => ['auth', 'head']], function () {
+Route::group(['middleware' => ['auth', 'leader']], function () {
     
     Route::post('first', 'AppController@first')->name('first');
     
     // Настройки
-    Route::get('/settings', 'SystemController@index');
-    Route::post('/settings', 'SystemController@index');
+    Route::get('/settings', 'SystemController@index')->name('settings');
+    Route::post('/settings', 'SystemController@index')->name('settings.store');
+    Route::get('/settings/edit/{parameter}', 'SystemController@edit')->name('settings.edit');
+    Route::post('/settings/update/{parameter}', 'SystemController@update')->name('settings.update');
     
     
     // Должности
     Route::group(['prefix' => 'positions'], function () {
-        Route::get('/', 'PositionController@index');
-        Route::get('/new', 'PositionController@new');
-        Route::get('/delete/{position}', 'PositionController@delete');
-        Route::post('/store', 'PositionController@store');
-        Route::post('/update', 'PositionController@update');
-        Route::get('/show/{position}', 'PositionController@show');
-        Route::get('/edit/{position}', 'PositionController@show');
+        Route::get('/', 'PositionController@index')->name('positions');
+        Route::get('/new', 'PositionController@new')->name('positions.create');
+        Route::get('/delete/{position}', 'PositionController@delete')->name('positions.delete');
+        Route::post('/store', 'PositionController@store')->name('positions.store');
+        Route::post('/update', 'PositionController@update')->name('positions.update');
+        Route::get('/show/{position}', 'PositionController@show')->name('positions.show');
+        Route::get('/edit/{position}', 'PositionController@show')->name('positions.edit');;
     });
 
     // Пользователи
     Route::group(['prefix' => 'users'], function () {
        Route::get('/', 'UserController@index')->name('users');
-        Route::get('/new', 'UserController@create');
-        Route::post('/new', 'UserController@store')->name('create-user');
-        Route::get('/edit/{user}', 'UserController@edit');
-        Route::post('/update', 'UserController@update');
-        Route::get('/show/{user}', 'UserController@show')->name('view-user');
-        Route::get('/delete/{user}', 'UserController@destroy');
+        Route::get('/new', 'UserController@create')->name('users.create');
+        Route::post('/new', 'UserController@store')->name('users.store');
+        Route::get('/edit/{user}', 'UserController@edit')->name('users.edit');
+        Route::post('/update', 'UserController@update')->name('users.update');
+        Route::get('/show/{user}', 'UserController@show')->name('users.show');
+        Route::get('/delete/{user}', 'UserController@destroy')->name('users.delete');
         Route::get('/statistics/{user}', 'UserController@statistics'); 
     });
 
@@ -57,21 +59,28 @@ Route::group(['middleware' => ['auth', 'head']], function () {
 
 Route::group(['middleware' => 'auth'], function () {
     // Страница пользователя
-    Route::get('/account', 'UserController@show');
+    Route::get('/account', 'UserController@show')->name('users.account');
     Route::get('/statistics', 'UserController@statistics');
     
     // Заявки
     Route::group(['prefix' => 'holidays'], function () {
-       Route::get('/', 'HolidaysController@index'); // TODO Разный у пользователя и руководителя
+       Route::get('/', 'HolidaysController@index');
         Route::get('/new', 'HolidaysController@new');
         Route::post('/store', 'HolidaysController@store');
         Route::post('/update', 'HolidaysController@update');
         Route::get('/edit/{holiday}', 'HolidaysController@edit');
         Route::get('/show/{holiday}', 'HolidaysController@show'); 
     });
+    
+    Route::get('logout', 'AuthController@logout')->name('auth.logout');
 });
 
-Auth::routes();
+//Auth::routes();
+Route::group(['middleware' => 'guest'], function () {
+    Route::get('login', 'AuthController@showLoginForm')->name('auth.login');
+    Route::post('login', 'AuthController@authenticate')->name('auth.login');
+    Route::get('reset', 'AuthController@resetPasswordForm')->name('auth.reset');
+});
 
 Route::get('/home', 'HomeController@index')->name('home');
 

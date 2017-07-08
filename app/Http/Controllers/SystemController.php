@@ -14,50 +14,14 @@ class SystemController extends Controller
      */
     public function index()
     {
-        //
+        $parameters = SystemParameter::all();
+        
+        return view('settings.index', compact('parameters'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function edit(SystemParameter $parameter)
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\SystemParameter  $systemParameter
-     * @return \Illuminate\Http\Response
-     */
-    public function show(SystemParameter $systemParameter)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\SystemParameter  $systemParameter
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(SystemParameter $systemParameter)
-    {
-        //
+        return view('settings.edit', compact('parameter'));
     }
 
     /**
@@ -67,20 +31,19 @@ class SystemController extends Controller
      * @param  \App\SystemParameter  $systemParameter
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SystemParameter $systemParameter)
+    public function update(Request $request, SystemParameter $parameter)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\SystemParameter  $systemParameter
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(SystemParameter $systemParameter)
-    {
-        //
+        // TODO по сути еще тип данных нужно проверять в зависимости от типа значения, но тогда в БД нужно прописать
+        $this->validate($request, [
+            'value' => 'required'
+        ]);
+        
+        $parameter->value = $request->value;
+        $parameter->save();
+        
+        // TODO сообщение об успешном изменении, возврат на страницу параметров системы
+        
+        return redirect('settings');
     }
     
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Position;
 use Mail;
@@ -16,16 +16,60 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-
+        // TODO проверять в конструкторе
         if ($request->user()->can('is-leader')) {
-            $users = User::paginate(2); // TODO change to 10
-            $search['email'] = request('email');
-            $search['position'] = request('position');
-            $search['sort'] = request('sort');
-            $search['order'] = request('order');
+            
+            $sql_where = array();
+            $search = array();
+            
+            if (request('email'))  {
+                $search['email'] = request('email');
+                $sql_where[] = array('email', 'like', '%'.$search['email'].'%');
+            }
+            
+            if (request('position') && request('position') != 0)  {
+                $search['position'] = request('position');
+                
+                // TODO несколько должностей
+                $sql_where[] = array('position_id', $search['position']);
+            }
+            
+            if(request('sort') && request('order')){
+                $search['sort'] = request('sort');
+                $search['order'] = (request('order') == 'asc' || request('order') == 'desc') ? request('order') : 'asc';
+                
+                switch (request('sort')) {
+                    case 'email';
+                        $sql_order = array('column' => $search['sort'], 'order' => $search['order']);
+                    break;
+                    case 'name';
+                        $sql_order = array('column' => 'last_name', 'order' => $search['order']);
+                    break;
+                
+                    default :
+                        $sql_order = array('column' => 'email', 'order' => 'asc');
+                
+                    break;
+                }
+                
+            }else{
+                $sql_order = array('column' => 'email', 'order' => 'asc');
+            }
+            
+            $users = User::where($sql_where)
+                ->orderBy($sql_order['column'], $sql_order['order'])
+                ->paginate(1); // TODO change to 10
+            
+            if (request('sort') && request('order'))  {
+                $table_sort['order'] = $search['order'] == 'asc' ? 'desc' : 'asc';
+                $table_sort['sort'] = request('sort');
+            }else{
+                $table_sort = null;
+            }
+            
             $positions = Position::all();
             
-            return view('user.index', compact('users', 'search', 'positions'));
+            return view('user.index', compact('users', 'search', 'table_sort', 'positions', 'request'));
         }
         
         //abort(403);
@@ -38,7 +82,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $positions = Position::orderBy('priority', 'desc')->get(); // TODO если ничего нет, то добавление должности или сообщение
+        $positions = Position::all(); // TODO если ничего нет, то добавление должности или сообщение
         
         return view('user.create', compact('positions'));
     }
@@ -65,7 +109,7 @@ class UserController extends Controller
             'password' => bcrypt($password),
         ]);
         
-        // TODO в очередь
+        // TODO в очередь и ссылка на восстановление пароля
         Mail::send('emails.created_password', ['password' => $password], function ($m) use ($user) {
             //$m->from('no-reply@hms.by', 'HMS');
             $m->to('dmitrochenkooleg@gmail.com')->subject('Добро пожаловать в HMS!');
