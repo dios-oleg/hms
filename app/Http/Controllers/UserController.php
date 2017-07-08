@@ -130,7 +130,9 @@ class UserController extends Controller
     {
         if( isset($user) ) $user = $request->user();
         
-        return $user;
+        $positions = Position::all();
+        
+        return view('user.edit', compact('user', 'positions'));
     }
 
     /**

@@ -49,7 +49,7 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
         Route::get('/new', 'UserController@create')->name('users.create');
         Route::post('/new', 'UserController@store')->name('users.store');
         Route::get('/edit/{user}', 'UserController@edit')->name('users.edit');
-        Route::post('/update', 'UserController@update')->name('users.update');
+        Route::post('/update/{user}', 'UserController@update')->name('users.update');
         Route::get('/show/{user}', 'UserController@show')->name('users.show');
         Route::get('/delete/{user}', 'UserController@destroy')->name('users.delete');
         Route::get('/statistics/{user}', 'UserController@statistics'); 
