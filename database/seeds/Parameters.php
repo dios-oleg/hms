@@ -28,7 +28,7 @@ class Parameters extends Seeder
         
         SystemParameter::create([
            'key' => 'boss_print',
-           'title' => 'Директор в р.п.',
+           'title' => 'Директор в д.п.',
            'value' => 'Пальчику А.В.',
         ]);
         

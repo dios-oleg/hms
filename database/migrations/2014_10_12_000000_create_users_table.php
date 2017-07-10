@@ -26,7 +26,7 @@ class CreateUsersTable extends Migration
             $table->enum('role', Roles::getConstants())->default(Roles::EMPLOYEE);
             $table->integer('position_id')->index();
             $table->string('password');
-            $table->boolean('is_block')->default(false);
+            $table->boolean('is_blocked')->default(false);
             $table->string('comment')->nullable()->default(null);
             $table->rememberToken();
             $table->timestamps();

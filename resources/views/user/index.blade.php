@@ -25,6 +25,11 @@
             Поиск
         </button>
         
+        <div class="form-group">
+            <label for="email">Количество найденых записей: </label>
+            <p class="form-control-static">{{ $users->total() }}</ip>
+        </div>
+        
     </form>
     
     @if (count($users) > 0)
@@ -60,7 +65,7 @@
             </thead>
             <tbody>
             @foreach ($users as $user)
-                <tr class="{{ $user->is_block == 1 ? 'danger' : '' }}">
+                <tr class="{{ $user->is_blocked == 1 ? 'danger' : '' }}">
                     <td> {{ $user->id }} </td>
                     <td>
                         <a href="{{ route('users.show', $user->id) }}"--> {{ $user->email }} </a>
@@ -69,7 +74,7 @@
                         <!--a href="{{ route('users.show', $user->id) }}"--> {{ $user->first_name.' '.$user->last_name }} <!--/a-->
                     </td>
                     
-                    <td> {{ $user->position }} </td>
+                    <td> {{ $user->position->name }} </td>
                     <td> {{ $user->role }} </td>
                 </tr>
             @endforeach
@@ -80,11 +85,7 @@
         <div class="text-info text-center padding-top-20">Пользователи не найдены</div>
     @endif
     
-    
-
-    {{-- $users->currentPage() --}}
     <div class="text-center">
-        {{-- TODO переделать стиль, убрать отступ сверху-снизу --}}
         {{ $users->appends($search)->links() }}
     </div>
 @endsection

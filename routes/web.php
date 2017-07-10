@@ -80,6 +80,9 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('login', 'AuthController@showLoginForm')->name('auth.login');
     Route::post('login', 'AuthController@authenticate')->name('auth.login');
     Route::get('reset', 'AuthController@resetPasswordForm')->name('auth.reset');
+    Route::post('reset', 'AuthController@resetPassword')->name('auth.reset');
+    Route::get('email', 'AuthController@sendLinkResetPasswordForm')->name('auth.email');
+    Route::post('email', 'AuthController@sendLinkResetPassword')->name('auth.sendlink');
 });
 
 Route::get('/home', 'HomeController@index')->name('home');

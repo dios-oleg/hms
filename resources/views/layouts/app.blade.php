@@ -12,7 +12,7 @@
         @hasSection('title')
             @yield('title') 
         @else
-            config('app.name', 'HMS')
+            {{ config('app.name', 'HMS') }}
         @endif
     </title>
 

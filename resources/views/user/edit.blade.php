@@ -60,13 +60,14 @@
         <hr>
             <div class="form-group">
                 <div class="control-label col-sm-3">
-                    <label for="">Должность</label>
+                    <label for="positions">Должность</label>
                 </div>
                 <div class="col-sm-9">
-                    <select class="selectpicker">
+                    <select class="selectpicker" id="positions" name="positions">
                         @foreach($positions as $position)
-                            {{--TODO выделить текущую должность--}}
-                            <option>$position->name</option>
+                            <option {{ ($position->id == $user->position->id) ? 'selected' : '' }}>
+                                {{ $position->name }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
@@ -75,45 +76,77 @@
                 <div class="col-sm-9 col-sm-offset-3">
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" id="blocked" name="blocked"> Заблокирован
+                            <input type="checkbox" id="blocked" name="blocked" {{ $user->is_blocked ? 'checked' : '' }}> Заблокирован
                         </label>
                       </div>
                     </div>
+            </div>
+            <div class="form-group">
+                <div class="control-label col-sm-3">
+                    <label for="roles">Роль</label>
                 </div>
+                <div class="col-sm-9">
+                    <select class="selectpicker" id="roles" name="roles">
+                        @foreach($roles as $role)
+                            <option {{ $role }} {{ ($role == $user->role) ? 'selected' : '' }}>
+                                {{ $role }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
         @else
             <div class="form-group">
                 <div class="control-label col-sm-3">
-                    <label>Должность</label>
+                    <label>Текущая должность</label>
                 </div>
                 <div class="col-sm-9">
-                    <p class="form-control-static">{{ $user->position }}</p>
+                    <p class="form-control-static">{{ $user->position->name }}</p>
                 </div>
             </div>
         @endif
         
         {{--TODO Только если владелец аккаунта, иначе только сброс пароля--}}
         <hr>
-        <div class="form-group">
-            <div class="control-label col-sm-3">
-                <label for="password">Новый пароль</label>
+        @if (Auth::user()->id == $user->id)
+            <div class="form-group">
+                <div class="control-label col-sm-3">
+                    <label for="password">Новый пароль</label>
+                </div>
+                <div class="col-sm-9">
+                    <input type="password" class="form-control" id="password" name="password" value="">
+                </div>
             </div>
-            <div class="col-sm-9">
-                <input type="password" class="form-control" id="password" name="password" value="">
+            <div class="form-group">
+                <div class="control-label col-sm-3">
+                    <label for="password">Еще раз пароль</label>
+                </div>
+                <div class="col-sm-9">
+                    <input type="password" class="form-control" id="password_repeat" name="password_repeat" value="">
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <div class="control-label col-sm-3">
-                <label for="password">Еще раз пароль</label>
+        @else
+            <div class="form-group">
+                <div class="control-label col-sm-3">
+                        <label for="password">Пароль</label>
+                </div>
+                <div class="col-sm-9">
+                    <a class="btn btn-default" href="{{ route('auth.reset', $user->email) }}">Сбросить пароль</a>
+                </div>
             </div>
-            <div class="col-sm-9">
-                <input type="password" class="form-control" id="password_repeat" name="password_repeat" value="">
-            </div>
-        </div>
+        @endif
         
-        <div class="col-sm-offset-3 col-sm-9">
-            <button class="btn btn-primary">Обновить</button>
-            {{--TODO вернуться на главную страницу, если пользователь или на страницу пользователей, если админ--}}
-            <a href="{{ route('home') }}" class="btn btn-default">Назад</a>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <button class="btn btn-primary">Обновить</button>
+                
+                @if (Auth::user()->role == $roles['LEADER'])
+                    <a href="{{ route('users') }}" class="btn btn-default">Назад</a>
+                @else
+                    <a href="{{ route('users.account') }}" class="btn btn-default">Назад</a>
+                @endif
+
+            </div>
         </div>
         
         

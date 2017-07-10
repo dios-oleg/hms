@@ -41,7 +41,7 @@ class User extends Authenticatable
     
     public function scopeActive($query) 
     {
-        return $query->where('is_block', 0);
+        return $query->where('is_blocked', 0);
     }
     
     /*public function scopeSearch($query, $email) {

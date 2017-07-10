@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Enum\Roles;
 use Illuminate\Http\Request;
 use App\Models\Position;
 use Mail;
@@ -128,11 +129,11 @@ class UserController extends Controller
      */
     public function show(Request $request, User $user)
     {
-        if( isset($user) ) $user = $request->user();
+        if( empty($user) ) $user = \Auth::user();
         
         $positions = Position::all();
         
-        return view('user.edit', compact('user', 'positions'));
+        return view('user.show', compact('user', 'positions'));
     }
 
     /**
@@ -143,9 +144,13 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        if( isset($user) ) $user = Auth::user();
+        if( empty($user) ) $user = \Auth::user();
         
-        return $user;
+        $positions = Position::all();
+        
+        $roles = Roles::getConstants();
+        
+        return view('user.edit', compact('user', 'positions', 'roles'));
     }
 
     /**
@@ -157,8 +162,39 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
-        //только изменение информации, кроме head и blocked
+        // TODO validation
+        
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->last_name_print = $request->last_name_print;
+        $user->patronymic = $request->patronymic;
+        $user->address = $request->address;
+        
+        // TODO только для текущего пользователя
+        if(\Auth::user() == $user){
+            // TODO и если совпадает два пароля
+            $user->password = $request->password;
+        }
+        
+        // TODO Только для админа и со страницы users
+        if (\Auth::user()->can('is-leader')){
+            $user->position_id = $request->positions; // TODO нужно ли делать проверку на существование?
+            
+            $blocked = $request->blocked == true;
+            
+            if( ($request->roles != Roles::LEADER || $blocked) && !User::isNotLastLeader() ){
+                // TODO сообщение об ошибке, нельзя убрать всех АДМИНОВ из системы
+                return 'error';
+            }else{
+                $user->role = $request->roles;
+                $user->is_blocked = $blocked; 
+            }
+            
+        }
+        
+        $user->save();
+        
+        return redirect('users'); // TODO перенаправление на аккаунт или на просмотр
     }
     
     /**
@@ -170,8 +206,9 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         // нельзя удалить руководителя если он 1
-        $count = User::where('head', true)
-                     ->where('blocked', false)
+        // TODO проверку в модель, т.к. для удаления и обновления
+        /*$count = User::where('role', Roles::EMPLOYEE)
+                     ->where('is_blocked', false)
                      ->count();
         
         if($count > 1 ){
@@ -180,6 +217,6 @@ class UserController extends Controller
             return 'delete';
         }
         
-        return 'not delete';
+        return 'not delete';*/
     }
 }
