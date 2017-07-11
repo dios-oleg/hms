@@ -79,10 +79,10 @@ Route::group(['middleware' => 'auth'], function () {
 Route::group(['middleware' => 'guest'], function () {
     Route::get('login', 'AuthController@showLoginForm')->name('auth.login');
     Route::post('login', 'AuthController@authenticate')->name('auth.login');
-    Route::get('reset', 'AuthController@resetPasswordForm')->name('auth.reset');
+    Route::get('reset/{token?}', 'AuthController@resetPasswordForm')->name('auth.reset.form');
     Route::post('reset', 'AuthController@resetPassword')->name('auth.reset');
-    Route::get('email', 'AuthController@sendLinkResetPasswordForm')->name('auth.email');
-    Route::post('email', 'AuthController@sendLinkResetPassword')->name('auth.sendlink');
+    Route::get('recovery', 'AuthController@sendLinkResetPasswordForm')->name('auth.recovery');
+    Route::post('recovery', 'AuthController@sendLinkResetPassword')->name('auth.sendmail');
 });
 
 Route::get('/home', 'HomeController@index')->name('home');

@@ -139,7 +139,7 @@
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
                 <button class="btn btn-primary">Обновить</button>
-                
+                {{-- url()->previous()  --}}
                 @if (Auth::user()->role == $roles['LEADER'])
                     <a href="{{ route('users') }}" class="btn btn-default">Назад</a>
                 @else

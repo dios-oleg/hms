@@ -54,7 +54,7 @@
                                     Войти
                                 </button>
 
-                                <a class="btn btn-link" href="{{ route('auth.reset') }}">
+                                <a class="btn btn-link" href="{{ route('auth.recovery') }}">
                                     Забыль пароль?
                                 </a>
                             </div>

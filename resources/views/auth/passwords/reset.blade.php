@@ -16,10 +16,10 @@
                         </div>
                     @endif
 
-                    <form class="form-horizontal" role="form" method="POST" action="{{-- route('auth.password') --}}">
+                    <form class="form-horizontal" role="form" method="POST" action="{{ route('auth.reset') }}">
                         {{ csrf_field() }}
 
-                        <input type="hidden" name="token" value="{{-- $token --}}">
+                        <input type="hidden" name="token" value="{{ $token }}">
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                             <label for="email" class="col-md-4 control-label">E-Mail адрес</label>

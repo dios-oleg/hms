@@ -42,5 +42,6 @@ class Users extends Seeder
            /*'is_block' => false,
            'comment' => 'Уволен',*/
         ]);
+        
     }
 }

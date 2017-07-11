@@ -29,6 +29,10 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
     
+    protected $casts = [
+        'is_blocked' => 'boolean',
+    ];
+    
     public function holiday()
     {
         return $this->hasMany(\App\Models\Holiday::class);
@@ -37,6 +41,10 @@ class User extends Authenticatable
     public function position()
     {
         return $this->belongsTo(\App\Models\Position::class);
+    }
+    
+    public function password_reset() {
+        return $this->hasMany(\App\Models\Password_reset::class);
     }
     
     public function scopeActive($query) 

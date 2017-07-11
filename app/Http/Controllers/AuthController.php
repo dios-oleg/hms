@@ -7,7 +7,8 @@ use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Mail;
-//use app\Models\User;
+use App\Models\User;
+use Carbon\Carbon;
 
 class AuthController extends Controller{
     
@@ -48,12 +49,32 @@ class AuthController extends Controller{
         
         // TODO если токен истек, то не действительно восстановление
         
-        return view('auth.passwords.reset');
+        return view('auth.passwords.reset', compact('token'));
     }
     
     public function resetPassword(Request $request) {
-        // ПРОВЕРКА ТОКЕНА
+        // ПРОВЕРКА ТОКЕНА если токен устарел по БД, то сразу ошибка. Или если не найден в БД
+        echo $request->token;
+        echo $request->email;
+        echo $request->password;
+        $user = User::where('email', $request->email)->first();
         
+        $password_reset = $user->password_reset()->where('token', $request->token)->first();
+        
+        //echo  \Carbon::now();
+        if( (Carbon::now()->timestamp - Carbon::parse($password_reset->created_at)->timestamp) < (config('auth.passwords.users.expire') * 60) ){
+            echo "es";
+            // TODO восстановить пароль
+            // удалить все записи с токенами с данным пользователем
+        }else{
+            echo "fA";
+            // TODO Ошибка о восстановлении пароля, время истекло, ссылка недействительна
+        }
+        
+        //echo $password_reset;
+        // TODO проверка времени восстановления $password_reset->created_at; до текущего момента
+        // TODO время жизни пароля взять из настроек приложения config('auth.passwords.users.expire')
+       //$user->password_reset
         // TODO валидация
         
         // TODO замена пароля и либо авторизация либо переадресация на страницу входа
@@ -75,7 +96,13 @@ class AuthController extends Controller{
         
         // TODO check email 
         $user = \App\Models\User::find(1);
+        
         $token = Str::random(60);
+        
+        $password_reset = new \App\Models\Password_reset(['token' => $token, 'user_id' => $user->id]);
+        
+        $user->password_reset()->save($password_reset);
+        
         
         // TODO добавить в БД с привязкой к почте и времени
         
@@ -87,6 +114,10 @@ class AuthController extends Controller{
                 $m->to('dmitrochenkooleg@gmail.com', $user->name)->subject('Восстановление пароля!');
             });
         }
+        
+        // TODO Ссылка была отправлена на почту, проверьте свою почту и перейдите по полученной ссылке для восст пароля
+        // или ошибка, адрес не найден
+        
         
         return 'send email';
     }
