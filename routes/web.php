@@ -53,6 +53,7 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
         Route::get('/show/{user}', 'UserController@show')->name('users.show');
         Route::get('/delete/{user}', 'UserController@destroy')->name('users.delete');
         Route::get('/statistics/{user}', 'UserController@statistics'); 
+        Route::get('/reset/{user}', 'AuthController@sendLinkResetPassword')->name('users.reset');
     });
 
 });

@@ -65,7 +65,7 @@
                 <div class="col-sm-9">
                     <select class="selectpicker" id="positions" name="positions">
                         @foreach($positions as $position)
-                            <option {{ ($position->id == $user->position->id) ? 'selected' : '' }}>
+                            <option value="{{ $position->id }}" {{ ($position->id == $user->position->id) ? 'selected' : '' }}>
                                 {{ $position->name }}
                             </option>
                         @endforeach
@@ -73,13 +73,25 @@
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-9 col-sm-offset-3">
+                <div class="control-label col-sm-3">
+                    <label for="blocked">Блокировка</label>
+                </div>
+                <div class="col-sm-9">
                     <div class="checkbox">
                         <label>
                             <input type="checkbox" id="blocked" name="blocked" {{ $user->is_blocked ? 'checked' : '' }}> Заблокирован
                         </label>
                       </div>
                     </div>
+            </div>
+            {{--отображать или активировать только когда статус блокировки true или нажимаешь на галочку true--}}
+            <div class="form-group">
+                <div class="control-label col-sm-3">
+                    <label for="comment">Причина блокировки</label>
+                </div>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="comment" name="comment" value={{ $user->comment }}>
+                </div>
             </div>
             <div class="form-group">
                 <div class="control-label col-sm-3">
@@ -131,7 +143,7 @@
                         <label for="password">Пароль</label>
                 </div>
                 <div class="col-sm-9">
-                    <a class="btn btn-default" href="{{ route('auth.reset', $user->email) }}">Сбросить пароль</a>
+                    <a class="btn btn-default" href="{{ route('users.reset', $user) }}">Сбросить пароль</a>
                 </div>
             </div>
         @endif
@@ -139,13 +151,7 @@
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
                 <button class="btn btn-primary">Обновить</button>
-                {{-- url()->previous()  --}}
-                @if (Auth::user()->role == $roles['LEADER'])
-                    <a href="{{ route('users') }}" class="btn btn-default">Назад</a>
-                @else
-                    <a href="{{ route('users.account') }}" class="btn btn-default">Назад</a>
-                @endif
-
+                <a href="{{ url()->previous() }}" class="btn btn-default">Назад</a>
             </div>
         </div>
         

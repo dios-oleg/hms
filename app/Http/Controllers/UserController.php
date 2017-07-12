@@ -133,7 +133,9 @@ class UserController extends Controller
         
         $positions = Position::all();
         
-        return view('user.show', compact('user', 'positions'));
+        $roles = Roles::getConstants();
+        
+        return view('user.show', compact('user', 'positions', 'roles'));
     }
 
     /**
@@ -172,8 +174,8 @@ class UserController extends Controller
         
         // TODO только для текущего пользователя
         if(\Auth::user() == $user){
-            // TODO и если совпадает два пароля
-            $user->password = $request->password;
+            // TODO и если совпадает два пароля ИЛИ вообще сделать отдельную строку или три поля: СТАРЫЙ, НОВЫЙ НОВЫЙ
+            //$user->password = $request->password;
         }
         
         // TODO Только для админа и со страницы users
@@ -182,12 +184,31 @@ class UserController extends Controller
             
             $blocked = $request->blocked == true;
             
-            if( ($request->roles != Roles::LEADER || $blocked) && !User::isNotLastLeader() ){
-                // TODO сообщение об ошибке, нельзя убрать всех АДМИНОВ из системы
-                return 'error';
-            }else{
+            // TODO что-то тут лажа
+            if( User::isNotLastLeader() ){
+            //if( ! || ($request->roles != Roles::LEADER || $blocked) && !User::isNotLastLeader() ){
+                
                 $user->role = $request->roles;
                 $user->is_blocked = $blocked; 
+                // TODO только если заблокирован
+                if($user->is_blocked) $user->comment = $request->comment;
+                
+            }else{
+                // TODO сообщение об ошибке, нельзя убрать всех АДМИНОВ из системы
+                // Сделать проверку на изменение прав и на блокировку
+                // если заблокировать последнего админа, то проблема
+                
+                // и если текущий пользователь меняем сам себя
+                if( !User::isNotLastLeader() && ($blocked || $request->roles != Roles::LEADER) && $user->id == \Auth::user()->id ){
+                    return 'error';
+                }else{
+                    $user->role = $request->roles;
+                    $user->is_blocked = $blocked; 
+                    // TODO только если заблокирован
+                    if($user->is_blocked) $user->comment = $request->comment;
+                }
+                
+                //return 'save';
             }
             
         }
