@@ -7,6 +7,7 @@ use App\Enum\Roles;
 use Illuminate\Http\Request;
 use App\Models\Position;
 use Mail;
+use App\Http\Requests\UpdateUser;
 
 class UserController extends Controller
 {
@@ -96,6 +97,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        // TODO для первого пользователя только почта, должность
+        
         // TODO проверка на дублирующую почту
         $password = '123'; // TODO генерация пароля
         
@@ -162,9 +165,9 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
-    {
-        // TODO validation
+    public function update(UpdateUser $request, User $user)
+    {        
+        // TODO нужно своя проверка на соответствие ролей и должностей, чтобы была из заданного критерия
         
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
@@ -172,10 +175,14 @@ class UserController extends Controller
         $user->patronymic = $request->patronymic;
         $user->address = $request->address;
         
-        // TODO только для текущего пользователя
-        if(\Auth::user() == $user){
-            // TODO и если совпадает два пароля ИЛИ вообще сделать отдельную строку или три поля: СТАРЫЙ, НОВЫЙ НОВЫЙ
-            //$user->password = $request->password;
+        if (\Auth::user() == $user){
+            
+            // TODO validation + мб в отдельный метод изменение пароля?
+            if ($request->old_password != null)  {
+                // проверка на корректность, а также правила ввода нового пароля
+                //$user->password = $request->password;
+            }
+            
         }
         
         // TODO Только для админа и со страницы users
@@ -184,37 +191,19 @@ class UserController extends Controller
             
             $blocked = $request->blocked == true;
             
-            // TODO что-то тут лажа
-            if( User::isNotLastLeader() ){
-            //if( ! || ($request->roles != Roles::LEADER || $blocked) && !User::isNotLastLeader() ){
-                
-                $user->role = $request->roles;
-                $user->is_blocked = $blocked; 
-                // TODO только если заблокирован
-                if($user->is_blocked) $user->comment = $request->comment;
-                
+            if( !User::isNotLastLeader() && ($blocked || $request->roles != Roles::LEADER) && $user->id == \Auth::user()->id ){
+                return 'error';
             }else{
-                // TODO сообщение об ошибке, нельзя убрать всех АДМИНОВ из системы
-                // Сделать проверку на изменение прав и на блокировку
-                // если заблокировать последнего админа, то проблема
-                
-                // и если текущий пользователь меняем сам себя
-                if( !User::isNotLastLeader() && ($blocked || $request->roles != Roles::LEADER) && $user->id == \Auth::user()->id ){
-                    return 'error';
-                }else{
-                    $user->role = $request->roles;
-                    $user->is_blocked = $blocked; 
-                    // TODO только если заблокирован
-                    if($user->is_blocked) $user->comment = $request->comment;
-                }
-                
-                //return 'save';
+                $user->role = $request->roles;
+                $user->is_blocked = $blocked;
+                $user->comment = $user->is_blocked ? $request->comment : NULL;
             }
             
         }
         
         $user->save();
         
+        // TODO если редактирование аккаунта, то один маршрут, если как пользователя, то другой
         return redirect('users'); // TODO перенаправление на аккаунт или на просмотр
     }
     

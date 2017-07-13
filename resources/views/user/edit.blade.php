@@ -14,12 +14,25 @@
                 <p class="form-control-static">{{ $user->email }}</p>
             </div>
         </div>
+        
         <div class="form-group">
             <div class="control-label col-sm-3">
                 <label for="first_name">Имя</label>
             </div>
             <div class="col-sm-9">
                 <input type="text" class="form-control" id="first_name" name="first_name" value="{{ $user->first_name }}" required>
+                
+                {{--TODO проверка на наличие ошибок. можно в отдельный файл с передачей аргументов--}}
+                @if( $errors->has('first_name') )
+                <br><div class="alert alert-danger" role="alert">
+                    <ul>
+                        @foreach($errors->get('first_name') as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+                
             </div>
         </div>
         <div class="form-group">
@@ -100,7 +113,7 @@
                 <div class="col-sm-9">
                     <select class="selectpicker" id="roles" name="roles">
                         @foreach($roles as $role)
-                            <option {{ $role }} {{ ($role == $user->role) ? 'selected' : '' }}>
+                            <option value="{{ $role }}" {{ ($role == $user->role) ? 'selected' : '' }}>
                                 {{ $role }}
                             </option>
                         @endforeach
@@ -121,6 +134,14 @@
         {{--TODO Только если владелец аккаунта, иначе только сброс пароля--}}
         <hr>
         @if (Auth::user()->id == $user->id)
+            <div class="form-group">
+                <div class="control-label col-sm-3">
+                    <label for="old_password">Текущий пароль</label>
+                </div>
+                <div class="col-sm-9">
+                    <input type="password" class="form-control" id="old_password" name="old_password" value="">
+                </div>
+            </div>
             <div class="form-group">
                 <div class="control-label col-sm-3">
                     <label for="password">Новый пароль</label>

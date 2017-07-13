@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use app\Models\User;
 
-class AuthController extends Controller{
+class PasswordController extends Controller{
     
     public function showResetForm() {
         return view('auth.password.reset');
