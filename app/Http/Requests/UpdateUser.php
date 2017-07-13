@@ -34,11 +34,16 @@ class UpdateUser extends FormRequest
     
     public function messages() {
         return [
-            'first_name.required' => 'Необходимо указать имя',
-            'last_name.required' => 'Необходимо указать фамилию',
-            'last_name_print.required' => 'Необходимо указать фамилию в родительном падеже',
-            'patronymic.required' => 'Необходимо указать отчество',
-            'address.required' => 'Необходимо указать адрес проживания',
+            'first_name.required' => 'Необходимо указать Имя',
+            'first_name.max' => 'Необходимо указать корректное Имя',
+            'last_name.required' => 'Необходимо указать Фамилию',
+            'last_name.max' => 'Необходимо указать корректную Фамилию',
+            'last_name_print.required' => 'Необходимо указать Фамилию в родительном падеже',
+            'last_name_print.max' => 'Необходимо указать корректную Фамилию',
+            'patronymic.required' => 'Необходимо указать Отчество',
+            'patronymic.max' => 'Необходимо указать корректное Отчество',
+            'address.required' => 'Необходимо указать Адрес',
+            'address.max' => 'Необходимо указать корректный Адрес',
         ];
     }
 }

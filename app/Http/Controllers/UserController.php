@@ -207,6 +207,10 @@ class UserController extends Controller
         return redirect('users'); // TODO перенаправление на аккаунт или на просмотр
     }
     
+    public function updatePassword(Request $request, User $user) {
+        return 'update.password';
+    }
+    
     /**
      * Remove the specified resource from storage.
      *
