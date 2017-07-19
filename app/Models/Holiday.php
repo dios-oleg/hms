@@ -10,12 +10,9 @@ class Holiday extends Model
     {
         return $this->belongsTo('App\User');
     }
-    
+
     public function statuses() {
         return $this->hasMany('App\StatusHoliday');
     }
-    
-    public function () {
-        
-    }
+
 }
