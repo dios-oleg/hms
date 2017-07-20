@@ -14,13 +14,13 @@
             @foreach ($parameters as $parameter)
             <tr>
                 <td>
-                    {{ $parameter['title'] }} 
+                    {{ $parameter->title }}
                     <span class="text-muted">
                         {{-- TODO скрывать это поле и отображать при наведении на строку --}}
-                        <a href="{{ route('settings.edit', $parameter['id']) }}">править</a>
-                    </span> 
+                        <a href="{{ route('settings.edit', $parameter) }}">править</a>
+                    </span>
                 </td>
-                <td class="text-center">{{ $parameter['value'] }}</td>
+                <td class="text-center">{{ $parameter->value }}</td>
             </tr>
             @endforeach
         </tbody>

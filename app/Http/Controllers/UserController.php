@@ -60,7 +60,7 @@ class UserController extends Controller
 
             $users = User::where($sql_where)
                 ->orderBy($sql_order['column'], $sql_order['order'])
-                ->paginate(1); // TODO change to 10
+                ->paginate(10);
 
             if (request('sort') && request('order'))  {
                 $table_sort['order'] = $search['order'] == 'asc' ? 'desc' : 'asc';
@@ -215,26 +215,4 @@ class UserController extends Controller
         return 'update.password';
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(User $user)
-    {
-        // нельзя удалить руководителя если он 1
-        // TODO проверку в модель, т.к. для удаления и обновления
-        /*$count = User::where('role', Roles::EMPLOYEE)
-                     ->where('is_blocked', false)
-                     ->count();
-
-        if($count > 1 ){
-            $user->delete();
-
-            return 'delete';
-        }
-
-        return 'not delete';*/
-    }
 }
