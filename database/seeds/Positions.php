@@ -12,23 +12,23 @@ class Positions extends Seeder
      */
     public function run()
     {
-        DB::table('positions')->truncate();
-        
+        Position::truncate();
+
         Position::create([
             'name' => 'Директор',
             'name_print' => 'Директора',
         ]);
-        
+
         Position::create([
             'name' => 'Начальник',
             'name_print' => 'Начальника',
         ]);
-        
+
         Position::create([
             'name' => 'Инженер',
             'name_print' => 'Инженера',
         ]);
-        
+
         Position::create([
             'name' => 'Инженер-программист',
             'name_print' => 'Инженера-программиста',
