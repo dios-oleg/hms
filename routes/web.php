@@ -26,10 +26,20 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
     Route::post('first', 'AppController@first')->name('first');
 
     // Настройки
-    Route::get('/settings', 'SystemController@index')->name('settings');
-    Route::post('/settings', 'SystemController@index')->name('settings.store');
-    Route::get('/settings/edit/{parameter}', 'SystemController@edit')->name('settings.edit');
-    Route::post('/settings/update/{parameter}', 'SystemController@update')->name('settings.update');
+    /*Route::resource('settings', 'SystemController', [
+        'only' => ['index', 'edit', 'update'],
+        'names' => [
+            'index' => 'settings',
+            'edit' => 'settings.edit',
+            'update' => 'settings.update'
+        ]
+    ]);*/
+    Route::group(['prefix' => 'settings'], function(){
+        Route::get('/', 'SystemController@index')->name('settings');
+        Route::get('/{parameter}', 'SystemController@edit')->name('settings.edit');
+        Route::put('/{parameter}', 'SystemController@update')->name('settings.update');
+    });
+
 
 
     // Должности
@@ -54,7 +64,7 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
         Route::post('/password/{user}', 'UserController@updatePassword')->name('users.update.password');
         Route::get('/show/{user}', 'UserController@show')->name('users.show');
         Route::get('/delete/{user}', 'UserController@destroy')->name('users.delete');
-        Route::get('/statistics/{user}', 'UserController@statistics');
+        Route::get('/statistics/{user}', 'UserController@statistics'); // TODO убрать или переделать
         Route::get('/password/reset/{user}', 'AuthController@sendLinkResetPassword')->name('users.reset');
     });
 
@@ -62,10 +72,9 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
 
 Route::group(['middleware' => 'auth'], function () {
     // Страница пользователя
-    Route::get('/account', 'UserController@show')->name('users.account');
-    Route::get('/account/edit', 'UserController@edit')->name('users.account.edit');
-    Route::post('/account/edit', 'UserController@update')->name('users.account.update');
-    Route::get('/statistics', 'UserController@statistics');
+    Route::get('/profile', 'ProfileController@index')->name('profile');
+    Route::put('/profile', 'ProfileController@update')->name('profile.update');
+    Route::get('/statistics', 'ProfileController@statistics')->name('users.statistics');
 
     // Заявки
     Route::group(['prefix' => 'holidays'], function () {
@@ -82,7 +91,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 //Auth::routes();
 Route::group(['middleware' => 'guest'], function () {
-    Route::get('login', 'AuthController@showLoginForm')->name('auth.login');
+    Route::get('login', 'AuthController@showLoginForm')->name('auth.login.form');
     Route::post('login', 'AuthController@authenticate')->name('auth.login');
     Route::get('reset/{token?}', 'AuthController@resetPasswordForm')->name('auth.reset.form');
     Route::post('reset', 'AuthController@resetPassword')->name('auth.reset');

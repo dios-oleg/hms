@@ -34,13 +34,13 @@ class Parameters extends Seeder
 
         SystemParameter::create([
            'key' => 'min_holiday_days',
-           'title' => 'Минимальная длительность отпуска',
+           'title' => 'Минимальное количество дней отпуска в год',
            'value' => '1',
         ]);
 
         SystemParameter::create([
            'key' => 'max_holiday_days',
-           'title' => 'Максимальная длительность отпуска',
+           'title' => 'Максимальная длительность отпуска в год',
            'value' => '24',
         ]);
 

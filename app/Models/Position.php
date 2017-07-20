@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Position extends Model
 {
     public $timestamps = false;
+
     protected $fillable =  ['name', 'name_print', 'priority'];
-    
+
     public function user()
     {
-        return $this->hasMany('App\User');
+        return $this->hasMany(User::class);
     }
 }

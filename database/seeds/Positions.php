@@ -33,5 +33,15 @@ class Positions extends Seeder
             'name' => 'Инженер-программист',
             'name_print' => 'Инженера-программиста',
         ]);
+
+        Position::create([
+            'name' => 'Техник-программист',
+            'name_print' => 'Техника-программиста',
+        ]);
+
+        Position::create([
+            'name' => 'Системный программист',
+            'name_print' => 'Системного программиста',
+        ]);
     }
 }
