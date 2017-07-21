@@ -5,7 +5,7 @@
 @section('content')
     <form class="form-horizontal" method="POST" action="{{ route('settings.update', $parameter) }}">
         {{ csrf_field() }}
-        <input type="hidden" name="_method" value="PUT">
+        {{ method_field('PUT') }}
 
         <div class="form-group">
             <label class="control-label col-sm-3">Свойство</label>

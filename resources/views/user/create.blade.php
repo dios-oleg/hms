@@ -1,43 +1,79 @@
 @extends('layouts.app')
 
-@section('title', 'Новый сотрудник')
+@section('title', 'Новый пользователь')
 
 @section('content')
-<form method="POST" action="{{ route('users.create') }}">
+<form method="POST" action="{{ route('users.store') }}" class="form-horizontal">
     {{ csrf_field() }}
-    <div>
-        <label for="first_name">Имя</label>
-        <input type="text" name="first_name" id="first_name" required>
+    {{ method_field('POST') }}
+
+    <!--TODO только почту, должность и роль. При создании отправляется ссылка на восстановление пароля. При пустой инфе, необх заполнить инфу на стр редактирования-->
+
+    @if (count($errors) > 0)
+        <div class="row">
+            <div class="alert alert-danger" role="alert">
+                <ul>
+                    @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
+
+    <div class="form-group">
+        <div class="control-label col-sm-3">
+            <label for="email">E-Mail</label>
+        </div>
+        <div class="col-sm-9">
+
+            <!--TODO копировать старый ввод-->
+
+            <input type="text" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
+        </div>
     </div>
-    <div>
-        <label for="last_name">Фамилия</label>
-        <input type="text" name="last_name" id="last_name" required>
+
+    <div class="form-group">
+        <div class="control-label col-sm-3">
+            <label for="position">Должность</label>
+        </div>
+        <div class="col-sm-9">
+
+            <!--TODO копировать старый ввод-->
+
+            <select class="selectpicker" id="position" name="position" required>
+                @foreach($positions as $position)
+                    <option value="{{ $position->id }}" {{ old('position') }}>
+                        {{ $position->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
     </div>
-    <div>
-        <label for="last_name_print">Фамилия в род. падеже</label>
-        <input type="text" name="last_name_print" id="last_name_print" required>
+
+     <div class="form-group">
+        <div class="control-label col-sm-3">
+            <label for="role">Роль</label>
+        </div>
+        <div class="col-sm-9">
+
+            <!--TODO копировать старый ввод-->
+
+            <select class="selectpicker" id="role" name="role" required>
+                @foreach($roles as $role)
+                    <option value="{{ $role }}" {{ old('role') }}>
+                        {{ $role }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
     </div>
-    <div>
-        <label for="patronymic">Отчество</label>
-        <input type="text" name="patronymic" id="patronymic" required>
+
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <button class="btn btn-primary">Добавить пользователя</button>
+            <a href="{{ url()->previous() }}" class="btn btn-default">Назад</a>
+        </div>
     </div>
-    <div>
-        <label for="address">Адрес проживания</label>
-        <input type="text" name="address" id="address" required>
-    </div>
-    <div>
-        <label for="email">E-Mail</label>
-        <input type="text" name="email" id="email" required>
-    </div>
-    <select name="position_id" id="position_id">
-        @foreach( $positions as $position )
-            <option value="{{ $position->id }}">{{ $position->name }}</option>
-        @endforeach
-    </select>
-    <!--div>
-        <label for="position_id">Должность</label>
-        <input type="text" name="position_id" id="position_id" required>
-    </div-->
-    <input type="submit">
 </form>
 @endsection

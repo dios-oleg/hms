@@ -6,7 +6,7 @@
 @section('content')
     <form method="POST" action="{{ route('profile.update') }}" class="form-horizontal">
         {{ csrf_field() }}
-        <input type="hidden" name="_method" value="PUT">
+        {{ method_field('PUT') }}
 
         {{--TODO выделить в отдельный шаблон и передавать туда заголовок--}}
         @if (count($errors) > 0)

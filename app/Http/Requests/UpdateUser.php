@@ -31,7 +31,8 @@ class UpdateUser extends FormRequest
             'address' => 'required|max:255',
         ];
     }
-    
+
+    // TODO сообщения перенести в переводы, если одни и те же сообщения буду использоваться для нескольких реквестов
     public function messages() {
         return [
             'first_name.required' => 'Необходимо указать Имя',

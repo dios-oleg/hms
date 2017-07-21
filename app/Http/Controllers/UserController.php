@@ -7,22 +7,23 @@ use App\Enum\Roles;
 use Illuminate\Http\Request;
 use App\Models\Position;
 use Mail;
-use App\Http\Requests\UpdateUser;
+use App\Http\Requests\{UpdateUser, StoreUser};
 
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Отобразит список пользователей.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-        // TODO проверять в конструкторе
-        if ($request->user()->can('is-leader')) {
+        // TODO проверять в конструкторе или достаточно в маршрутах, здесь нет доступа для обычного пользователя
 
             $sql_where = array();
             $search = array();
+
+            // Request::only('username', 'password'); except
 
             if (request('email'))  {
                 $search['email'] = request('email');
@@ -72,56 +73,52 @@ class UserController extends Controller
             $positions = Position::all();
 
             return view('user.index', compact('users', 'search', 'table_sort', 'positions', 'request'));
-        }
 
-        //abort(403);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Отобразит форму добавления нового пользователя.
      *
      * @return \Illuminate\Http\Response
      */
     public function create()
     {
-        $positions = Position::all(); // TODO если ничего нет, то добавление должности или сообщение
+        $positions = Position::all(); // TODO если ничего нет, то добавление должности или сообщение || база не дб пуста
+        $roles = Roles::getConstants();
 
-        return view('user.create', compact('positions'));
+        return view('user.create', compact('positions', 'roles'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Сохранит нового пользователя в БД.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUser $request)
     {
-        // TODO для первого пользователя только почта, должность
-
-        // TODO проверка на дублирующую почту
-        $password = '123'; // TODO генерация пароля
-
+        // Пользователь сам должен заполнить пустые поля
         $user = User::create([
-            'first_name' => request('first_name'),
-            'last_name' => request('last_name'),
-            'last_name_print' => request('last_name_print'),
-            'patronymic' => request('patronymic'),
+            'first_name' => ' ',
+            'last_name' => ' ',
+            'last_name_print' => ' ',
+            'patronymic' => ' ',
             'email' => request('email'),
-            'address' => request('email'),
-            'position_id' => request('position_id'),
-            'password' => bcrypt($password),
+            'address' => ' ',
+            'position_id' => request('position'),
+            'password' => bin2hex(random_bytes(25)),
         ]);
 
         // TODO в очередь и ссылка на восстановление пароля
-        Mail::send('emails.created_password', ['password' => $password], function ($m) use ($user) {
+        /*Mail::send('emails.created_password', ['password' => $password], function ($m) use ($user) {
             //$m->from('no-reply@hms.by', 'HMS');
             $m->to('dmitrochenkooleg@gmail.com')->subject('Добро пожаловать в HMS!');
 
-        });
+        });*/
 
         // TODO если все хорошо, то возврат на страницу пользователей или сообщение о создании пользователя
-        return $request->all();
+        // $user_created = true;
+        return redirect()->route('users'); // ->withInput($request->except('email'))
     }
 
     /**
@@ -130,6 +127,7 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
+     // TODO удалить
     public function show(Request $request, User $user)
     {
         if( ! $user->id ) $user = \Auth::user();
@@ -138,7 +136,7 @@ class UserController extends Controller
 
         $roles = Roles::getConstants();
 
-        return view('user.show', compact('user', 'positions', 'roles'));
+        return view('user.show', compact('user'));
     }
 
     /**
@@ -147,6 +145,7 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
+    // TODO Отображение и редактирование на одной странице
     public function edit(User $user)
     {
         if( ! $user->id ) $user = \Auth::user();
@@ -159,7 +158,7 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Обновит информацию пользователя.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\User  $user
@@ -211,6 +210,7 @@ class UserController extends Controller
         return redirect()->route('users.show', $user->id);
     }
 
+    // TODO не должно быть пароля, максимум отправка пароля или отправку засунуть в приват, а вызов в другие методы
     public function updatePassword(Request $request, User $user) {
         return 'update.password';
     }

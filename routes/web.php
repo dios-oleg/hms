@@ -23,7 +23,7 @@ Route::get('/', 'AppController@index')->name('app');
 
 Route::group(['middleware' => ['auth', 'leader']], function () {
 
-    Route::post('first', 'AppController@first')->name('first');
+    Route::post('first', 'AppController@first')->name('first'); // TODO удалить, при входе первого пользователя (админа), у него попросит заполнить данные
 
     // Настройки
     /*Route::resource('settings', 'SystemController', [
@@ -40,8 +40,6 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
         Route::put('/{parameter}', 'SystemController@update')->name('settings.update');
     });
 
-
-
     // Должности
     Route::group(['prefix' => 'positions'], function () {
         Route::get('/', 'PositionController@index')->name('positions');
@@ -56,14 +54,13 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
     // Пользователи
     Route::group(['prefix' => 'users'], function () {
        Route::get('/', 'UserController@index')->name('users');
-        Route::get('/new', 'UserController@create')->name('users.create');
-        Route::post('/new', 'UserController@store')->name('users.store');
+        Route::get('/create', 'UserController@create')->name('users.create');
+        Route::post('/', 'UserController@store')->name('users.store');
         Route::get('/edit/{user}', 'UserController@edit')->name('users.edit');
         Route::post('/update/{user}', 'UserController@update')->name('users.update');
         Route::get('/password', 'UserController@editPassword')->name('users.password');
         Route::post('/password/{user}', 'UserController@updatePassword')->name('users.update.password');
         Route::get('/show/{user}', 'UserController@show')->name('users.show');
-        Route::get('/delete/{user}', 'UserController@destroy')->name('users.delete');
         Route::get('/statistics/{user}', 'UserController@statistics'); // TODO убрать или переделать
         Route::get('/password/reset/{user}', 'AuthController@sendLinkResetPassword')->name('users.reset');
     });
