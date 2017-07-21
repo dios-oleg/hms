@@ -132,7 +132,7 @@ class UserController extends Controller
      */
     public function show(Request $request, User $user)
     {
-        if( empty($user) ) $user = \Auth::user();
+        if( !$user->id ) $user = \Auth::user();
         
         $positions = Position::all();
         
@@ -207,8 +207,23 @@ class UserController extends Controller
         return redirect('users'); // TODO перенаправление на аккаунт или на просмотр
     }
     
-    public function updatePassword(Request $request, User $user) {
-        return 'update.password';
+    public function editPasswordForm() {
+        return view('user.password');
+    }
+    
+    public function updatePassword(\App\Http\Requests\UpdatePassword $password) {
+        // TODO можем вынести в отдельный метод вместе с отправкой пароля
+        
+        $user = \Auth::user(); // пароль можно изменять только у себя
+        
+        // TODO сверка пароля с паролем из БД, если совпадает, то можно изменять
+        
+        $user->password = bcrypt($password->password);
+        $user->save();
+        
+        // TODO save
+        
+        return redirect()->route('users.account');
     }
     
     /**

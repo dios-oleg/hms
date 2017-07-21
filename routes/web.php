@@ -50,8 +50,8 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
         Route::post('/new', 'UserController@store')->name('users.store');
         Route::get('/edit/{user}', 'UserController@edit')->name('users.edit');
         Route::post('/update/{user}', 'UserController@update')->name('users.update');
-        Route::get('/password', 'UserController@editPassword')->name('users.password');
-        Route::post('/password/{user}', 'UserController@updatePassword')->name('users.update.password');
+        //Route::get('/password', 'UserController@editPassword')->name('users.password');
+        //Route::post('/password/{user}', 'UserController@updatePassword')->name('users.update.password');
         Route::get('/show/{user}', 'UserController@show')->name('users.show');
         Route::get('/delete/{user}', 'UserController@destroy')->name('users.delete');
         Route::get('/statistics/{user}', 'UserController@statistics'); 
@@ -63,6 +63,9 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
 Route::group(['middleware' => 'auth'], function () {
     // Страница пользователя
     Route::get('/account', 'UserController@show')->name('users.account');
+    Route::get('/account/edit', 'UserController@edit')->name('users.account.edit');
+    Route::get('/account/password', 'UserController@editPasswordForm')->name('users.password');
+    Route::post('/account/password', 'UserController@updatePassword')->name('users.password.update');
     Route::get('/statistics', 'UserController@statistics');
     
     // Заявки

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use function \App\Http\Requests\UpdatePassword\checkPassword as checkPassword;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +14,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // TODO передать метод класса
+        \Validator::extend('password', checkPassword());
     }
 
     /**

@@ -83,17 +83,19 @@
         
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
-                @if (Auth::user()->can('is-leader'))
-                    <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary">Редактировать</a>
-                    {{--FIXIT если пользователь админ, то у него должно быть Изменить пароль на его записи. Точно так же, когда просматривает со страницы аккаунта--}}
-                    <a class="btn btn-default" href="{{ route('users.reset', $user) }}">Сбросить пароль</a>
-                    <a href="{{ route('users') }}" class="btn btn-default">Назад</a>
-                @else
-                    <a href="{{ route('users.account.edit') }}" class="btn btn-primary">Редактировать</a>
-                    <a class="btn btn-default" href="{{ route('users.password') }}">Изменить пароль</a>
-                    <a href="{{ route('app') }}" class="btn btn-default">Назад</a>
-                @endif
+                 @if ( Route::currentRouteName() == 'users.account' )
+                <a href="{{ route('users.account.edit') }}" class="btn btn-primary">Редактировать</a>
+                <a class="btn btn-default" href="{{ route('users.password') }}">Изменить пароль</a>
+                <a href="{{ route('app') }}" class="btn btn-default">Назад</a>
+            @else
+                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary">Редактировать</a>
+                <a class="btn btn-default" href="{{ route('users.reset', $user) }}">Сбросить пароль</a>
+                <a href="{{ route('users') }}" class="btn btn-default">Назад</a>
+            @endif
             </div>
+            
+           
+            
         </div>        
 
     </div>
