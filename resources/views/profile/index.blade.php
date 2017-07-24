@@ -88,8 +88,35 @@
                 <p class="form-control-static">{{ $user->role }}</p>
             </div>
         </div>
-
-        {{--TODO логин и пароль вернуть--}}
+        
+        <hr>
+        
+        <div class="form-group">
+            <div class="control-label col-sm-3">
+                <label for="old_password">Текущий пароль</label>
+            </div>
+            <div class="col-sm-9">
+                <input type="password" class="form-control" id="old_password" name="old_password">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="control-label col-sm-3">
+                <label for="password">Новый пароль</label>
+            </div>
+            <div class="col-sm-9">
+                <input type="password" class="form-control" id="password" name="password">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="control-label col-sm-3">
+                <label for="password_confirmation">Еще раз новый пароль</label>
+            </div>
+            <div class="col-sm-9">
+                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
+            </div>
+        </div>
+        
+        <hr>
 
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
