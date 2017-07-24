@@ -1,10 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Изменение параметров системы')
+@section('title', 'Изменение параметров системы | '.$parameter->title)
 
 @section('content')
-    <form class="form-horizontal" method="POST" action="{{ route('settings.update', $parameter->id) }}">
+    <form class="form-horizontal" method="POST" action="{{ route('settings.update', $parameter) }}">
         {{ csrf_field() }}
+        {{ method_field('PUT') }}
+
         <div class="form-group">
             <label class="control-label col-sm-3">Свойство</label>
             <div class="col-sm-9">
@@ -24,7 +26,7 @@
                 <input type="text" id="value" name="value" placeholder="Введите новое значение" class="form-control" required>
             </div>
         </div>
-        
+
         @if (count($errors) > 0)
             <div class="row">
                 <div class="col-sm-offset-3 col-sm-9">
@@ -39,7 +41,7 @@
                 </div>
             </div>
         @endif
-        
+
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
                 <input class="btn btn-primary" type="submit" value="Обновить">

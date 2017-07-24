@@ -37,7 +37,7 @@
 
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="{{ route('users.account') }}">Профиль</a>
+                                <a href="{{ route('profile') }}">Профиль</a>
                             </li>
                             <li>
                                 @if (Auth::user()->can('is-leader'))

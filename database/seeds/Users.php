@@ -13,10 +13,8 @@ class Users extends Seeder
      */
     public function run()
     {
-         DB::table('users')->truncate();
-         
-         // TODO использовать фабрику
-                
+        User::truncate();
+
         User::create([
            'first_name' => 'Олег',
            'last_name' => 'Дмитроченко',
@@ -26,9 +24,9 @@ class Users extends Seeder
            'address' => 'Витебск',
            'role' => Roles::EMPLOYEE,
            'position_id' => '3',
-           'password' => bcrypt('123456'), 
+           'password' => bcrypt('123456'),
         ]);
-        
+
         User::create([
            'first_name' => 'Павел',
            'last_name' => 'Жуков',
@@ -38,10 +36,13 @@ class Users extends Seeder
            'address' => 'Витебск',
            'role' => Roles::LEADER,
            'position_id' => '2',
-           'password' => bcrypt('123456'), 
-           /*'is_block' => false,
-           'comment' => 'Уволен',*/
+           'password' => bcrypt('123456'),
         ]);
-        
+
+        factory(App\Models\User::class, 3)->create([
+            'role' => Roles::LEADER,
+        ]);
+
+        factory(App\Models\User::class, 50)->create();
     }
 }

@@ -12,37 +12,37 @@ class Parameters extends Seeder
      */
     public function run()
     {
-        DB::table('system_parameters')->truncate();
-        
+        SystemParameter::truncate();
+
         SystemParameter::create([
            'key' => 'name',
            'title' => 'Наименование огранизации',
            'value' => 'ООО "Дженерал Софт"',
         ]);
-        
+
         SystemParameter::create([
            'key' => 'boss',
            'title' => 'Директор',
            'value' => 'Пальчик А.В.',
         ]);
-        
+
         SystemParameter::create([
            'key' => 'boss_print',
            'title' => 'Директор в д.п.',
            'value' => 'Пальчику А.В.',
         ]);
-        
+
         SystemParameter::create([
            'key' => 'min_holiday_days',
-           'title' => 'Минимальная длительность отпуска',
+           'title' => 'Минимальное количество дней отпуска в год',
            'value' => '1',
         ]);
-        
+
         SystemParameter::create([
            'key' => 'max_holiday_days',
-           'title' => 'Максимальная длительность отпуска',
+           'title' => 'Максимальная длительность отпуска в год',
            'value' => '24',
         ]);
-        
+
     }
 }

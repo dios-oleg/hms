@@ -1,10 +1,11 @@
+
 @extends('layouts.app')
 
 {{--TODO сделать проверку Если свой аккаунт, то один заголовок, если нет, то другой--}}
 @section('title', 'Редактирование профиля - '.$user->first_name.' '.$user->last_name)
 
 @section('content')
-    <form method="POST" action="{{ route('users.update', $user->id) }}" class="form-horizontal">
+    <form method="POST" action="{{ Route::currentRouteName() == 'users.account.edit' ? route('users.account.update') : route('users.update', $user->id) }}" class="form-horizontal">
         {{ csrf_field() }}
         {{--TODO выделить в отдельный шаблон и передавать туда заголовок--}}
         @if (count($errors) > 0)
@@ -19,7 +20,7 @@
                     </div>
             </div>
         @endif
-        
+
         <div class="form-group">
             <div class="control-label col-sm-3">
                 <label>Email</label>
@@ -28,7 +29,7 @@
                 <p class="form-control-static">{{ $user->email }}</p>
             </div>
         </div>
-        
+
         <div class="form-group">
             <div class="control-label col-sm-3">
                 <label for="first_name">Имя</label>
@@ -69,7 +70,7 @@
                 <input type="text" class="form-control" id="address" name="address" value="{{ $user->address }}" required>
             </div>
         </div>
-        
+
         {{--Если Админ, то можно менять данные поля--}}
         @if (Auth::user()->can('is-leader'))
         <hr>
@@ -125,16 +126,14 @@
         @else
             <div class="form-group">
                 <div class="control-label col-sm-3">
-                    <label>Текущая должность</label>
+                    <label>Должность</label>
                 </div>
                 <div class="col-sm-9">
                     <p class="form-control-static">{{ $user->position->name }}</p>
                 </div>
             </div>
         @endif
-        
-        
-        
+
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
                 <button class="btn btn-primary">Обновить информацию</button>
@@ -142,52 +141,5 @@
             </div>
         </div>
     </form>
-    
-    <form class="form-horizontal" method="POST" action="{{ route('users.update.password', $user->id) }}">
-    {{--TODO вынести на отдельную страницу, будет проще везде--}}
-    {{ csrf_field() }}
-    {{--TODO Только если владелец аккаунта, иначе только сброс пароля--}}
-        <hr>
-        @if (Auth::user()->id == $user->id)
-            <div class="form-group">
-                <div class="control-label col-sm-3">
-                    <label for="old_password">Текущий пароль</label>
-                </div>
-                <div class="col-sm-9">
-                    <input type="password" class="form-control" id="old_password" name="old_password" value="">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="control-label col-sm-3">
-                    <label for="password">Новый пароль</label>
-                </div>
-                <div class="col-sm-9">
-                    <input type="password" class="form-control" id="password" name="password" value="">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="control-label col-sm-3">
-                    <label for="password_confirmation">Еще раз пароль</label>
-                </div>
-                <div class="col-sm-9">
-                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" value="">
-                </div>
-            </div>
-            <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-                <button class="btn btn-primary">Обновить пароль</button>
-                {{--<a href="{{ url()->previous() }}" class="btn btn-default">Назад</a>--}}
-            </div>
-        </div>
-        @else
-            <div class="form-group">
-                <div class="control-label col-sm-3">
-                        <label for="password">Пароль</label>
-                </div>
-                <div class="col-sm-9">
-                    <a class="btn btn-default" href="{{ route('users.reset', $user) }}">Сбросить пароль</a>
-                </div>
-            </div>
-        @endif
-    </form>
+
 @endsection

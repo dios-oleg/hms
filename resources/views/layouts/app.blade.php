@@ -10,7 +10,7 @@
 
     <title>
         @hasSection('title')
-            @yield('title') 
+            @yield('title')
         @else
             {{ config('app.name', 'HMS') }}
         @endif
@@ -20,7 +20,8 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-select.min.css') }}" rel="stylesheet">
-   
+    <link href="{{ asset('css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
+
 </head>
 <body>
     <div id="app">
@@ -28,7 +29,7 @@
         @section('navigation')
             This is main menu
         @show
-        
+
         <div class="container">
             @yield('content')
         </div>
@@ -37,7 +38,18 @@
     <!-- Scripts -->
     <!--script src="{{ asset('js/app.js') }}"></script-->
     <script src="{{ asset('js/jquery.min.js') }}"></script>
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>    
-    <script src="{{ asset('js/bootstrap-select.min.js') }}"></script> 
+    <script src="{{ asset('js/moment.min.js') }}"></script>
+    <script src="{{ asset('js/locales.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-datetimepicker.min.js') }}"></script>
+
+    @hasSection('scripts')
+        <script type="text/javascript">
+            @section('scripts')
+                For to paste scripts
+            @show
+        </script>
+    @endif
 </body>
 </html>

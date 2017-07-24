@@ -18,7 +18,7 @@ class CreateStateHolidaysTable extends Migration
             $table->increments('id');
             $table->integer('holiday_id')->index();
             $table->integer('user_id')->index();
-            $table->enum('new_state', StateHoliday::getConstants());
+            $table->enum('new_status', StateHoliday::getConstants());
             $table->timestamp('created_at');
         });
     }

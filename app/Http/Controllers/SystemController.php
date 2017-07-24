@@ -15,7 +15,7 @@ class SystemController extends Controller
     public function index()
     {
         $parameters = SystemParameter::all();
-        
+
         return view('settings.index', compact('parameters'));
     }
 
@@ -37,13 +37,13 @@ class SystemController extends Controller
         $this->validate($request, [
             'value' => 'required'
         ]);
-        
+
         $parameter->value = $request->value;
         $parameter->save();
-        
+
         // TODO сообщение об успешном изменении, возврат на страницу параметров системы
-        
+
         return redirect('settings');
     }
-    
+
 }

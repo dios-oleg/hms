@@ -24,15 +24,15 @@ class UpdatePassword extends FormRequest
     public function rules()
     {
         return [
-            'old_password' => 'required|max:255|password', // TODO можем передать значение пароля и с ним сверять
-            'password' => 'required|alpha_dash|max:255|min:6|confirmed|different:old_password',
+            //'old_password' => 'required|max:255|password', // TODO можем передать значение пароля и с ним сверять
+            //'password' => 'required|alpha_dash|max:255|min:6|confirmed|different:old_password',
         ];
     }
     
-    public function checkPassword($attribute, $value, $parameters, $validator) {
+    /*public function checkPassword($attribute, $value, $parameters, $validator) {
         dd($parameters);
             return $value == 'foo';
-    }
+    }*/
     
     // TODO переводы сообщений в отдельный файл, а проверку эту мб ваще убрать? или как-то добавить сравнение со значение из БД
 }

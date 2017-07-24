@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'patronymic', 'last_name_print', 'address', 
+        'first_name', 'last_name', 'patronymic', 'last_name_print', 'address',
         'comment', 'email', 'password', 'position_id',
     ];
 
@@ -28,40 +28,34 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-    
+
     protected $casts = [
         'is_blocked' => 'boolean',
     ];
-    
-    public function holiday()
+
+    public function holidays()
     {
         return $this->hasMany(\App\Models\Holiday::class);
     }
-    
+
     public function position()
     {
         return $this->belongsTo(\App\Models\Position::class);
     }
-    
+
     public function password_reset() {
         return $this->hasMany(\App\Models\Password_reset::class);
     }
-    
-    public function scopeActive($query) 
+
+    public function scopeActive($query)
     {
-        return $query->where('is_blocked', 0);
+        return $query->where('is_blocked', false);
     }
-    
-    /*public function scopeSearch($query, $email) {
-        return $query->where('email', 'like', '%'.$search['email'].'%');
-            //->where('position_id', $search['position'])
-            //->orderBy($search['sort'], $search['order']);
-    }*/
-    
+
     static public function isNotLastLeader() {
         return self::active()->where('role', Roles::LEADER)->count() > 1;
     }
-    
+
     static public function isUndefinedLeader() {
         return self::active()->where('role', Roles::LEADER)->count() == 0;
     }

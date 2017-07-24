@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class StatusHoliday extends Model
 {
-    public function holiday() {
-        return $this->belongsTo('App\Holiday');
+    public function holiday()
+    {
+        return $this->belongsTo(Holiday::class);
     }
-    
-    public function head() {
-        return $this->belongsTo('App\User', 'head_id');
+
+    public function leader()
+    {
+        return $this->belongsTo(Holiday::class);
     }
 }
