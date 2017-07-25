@@ -13,7 +13,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // TODO передать метод класса
         //\Validator::extend('password', checkPassword());
         \Validator::resolver(function($translator, $data, $rules, $messages)
         {

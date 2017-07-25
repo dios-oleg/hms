@@ -5,6 +5,12 @@
 
 @section('content')
     <form method="POST" action="{{ route('profile.update') }}" class="form-horizontal">
+        @if (session('is_changed'))
+            <div class="alert alert-success">
+                Информация успешно обновлена!
+            </div>
+        @endif
+
         {{ csrf_field() }}
         {{ method_field('PUT') }}
 
@@ -88,9 +94,9 @@
                 <p class="form-control-static">{{ $user->role }}</p>
             </div>
         </div>
-        
+
         <hr>
-        
+
         <div class="form-group">
             <div class="control-label col-sm-3">
                 <label for="old_password">Текущий пароль</label>
@@ -115,7 +121,7 @@
                 <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
             </div>
         </div>
-        
+
         <hr>
 
         <div class="form-group">

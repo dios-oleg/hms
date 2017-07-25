@@ -24,7 +24,13 @@ class UpdateProfile extends FormRequest
     public function rules()
     {
         return [
-            //
+            'first_name' => 'required|min:2|max:255',
+            'last_name' => 'required|min:2|max:255',
+            'last_name_print' => 'required|min:2|max:255',
+            'patronymic' => 'required|max:255',
+            'address' => 'required|min:2|max:255',
         ];
     }
+
+    // TODO Добавить переводы или сообщения, в т.ч. на Password
 }

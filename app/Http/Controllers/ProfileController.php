@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\UpdateProfile;
 
 class ProfileController extends Controller
 {
@@ -22,38 +23,29 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Обновление информации пользователя.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \app\Http\Requests\UpdateProfile  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(UpdateProfile $request)
     {
         $user = \Auth::user();
-
-        $this->validate($request, [
-            'first_name' => 'required|min:2|max:255',
-            'last_name' => 'required|min:2|max:255',
-            'last_name_print' => 'required|min:2|max:255',
-            'patronymic' => 'required|max:255',
-            'address' => 'required|min:2|max:255',
-        ]);
 
         // Если введен новый пароль, то осуществляется проверка.
         if ( $request->password ) {
             $this->validate($request, [
-                'old_password' => 'required|password:pass', // TODO соответствовать значению из БД // TODO свое правило
+                'old_password' => 'required|password',
                 'password' => 'required_unless:old_password,|confirmed|min:8|max:255|different:old_password',
             ]);
 
-            $user->password = bcrypt($request->password);
+            $user->password = \Hash::make($request->password);
             $user->save();
         }
 
         $user->update($request->all());
 
-        // TODO Обновление информации пользователя, в т.ч. пароль
+        return redirect()->route('profile')->with('is_changed', true);
     }
 
     public function statistics(){
