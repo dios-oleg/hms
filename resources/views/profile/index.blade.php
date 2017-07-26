@@ -30,7 +30,7 @@
 
         <div class="form-group">
             <div class="control-label col-sm-3">
-                <label>Email</label>
+                <label>E-Mail</label>
             </div>
             <div class="col-sm-9">
                 <p class="form-control-static">{{ $user->email }}</p>
@@ -115,7 +115,7 @@
         </div>
         <div class="form-group">
             <div class="control-label col-sm-3">
-                <label for="password_confirmation">Еще раз новый пароль</label>
+                <label for="password_confirmation">Подтверждение нового пароля</label>
             </div>
             <div class="col-sm-9">
                 <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">

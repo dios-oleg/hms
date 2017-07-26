@@ -14,12 +14,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $user = \Auth::user();
-
-        //dd($user);
-
-        return view('profile.index', compact('user'));
-
+        return view('profile.index', ['user' => \Auth::user()]);
     }
 
     /**
@@ -36,7 +31,7 @@ class ProfileController extends Controller
         if ( $request->password ) {
             $this->validate($request, [
                 'old_password' => 'required|password',
-                'password' => 'required_unless:old_password,|confirmed|min:8|max:255|different:old_password',
+                'password' => 'confirmed|min:8|max:255|different:old_password',
             ]);
 
             $user->password = \Hash::make($request->password);

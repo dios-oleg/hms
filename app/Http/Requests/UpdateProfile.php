@@ -17,7 +17,7 @@ class UpdateProfile extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Правила валидации для контроллера ProfileController.
      *
      * @return array
      */
@@ -32,5 +32,4 @@ class UpdateProfile extends FormRequest
         ];
     }
 
-    // TODO Добавить переводы или сообщения, в т.ч. на Password
 }
