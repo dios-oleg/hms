@@ -5,28 +5,12 @@
 
 @section('content')
     <form method="POST" action="{{ route('profile.update') }}" class="form-horizontal">
-        @if (session('is_changed'))
-            <div class="alert alert-success">
-                Информация успешно обновлена!
-            </div>
-        @endif
+        @include('alerts.success')
 
         {{ csrf_field() }}
         {{ method_field('PUT') }}
 
-        {{--TODO выделить в отдельный шаблон и передавать туда заголовок--}}
-        @if (count($errors) > 0)
-            <div class="row">
-                    <div class="alert alert-danger" role="alert">
-                        <div><b>Ошибка! Запись не была обновлена!</b></div>
-                        <ul>
-                            @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-            </div>
-        @endif
+        @include('alerts.errors', ['title' => 'Ошибка! Данные не были обновлены!'])
 
         <div class="form-group">
             <div class="control-label col-sm-3">

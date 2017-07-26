@@ -3,6 +3,8 @@
 @section('title', 'Параметры системы')
 
 @section('content')
+    @include('alerts.success', ['title' => 'Свойство успешно обновлено!'])
+
     <table class="table table-bordered table-hover">
         <thead>
             <tr>

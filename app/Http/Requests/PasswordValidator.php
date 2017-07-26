@@ -6,9 +6,9 @@ use App\Models\User;
 
 class PasswordValidator extends \Illuminate\Validation\Validator
 {
-    public function validatePassword($attribute, $value)
+    public function validatePassword($attribute, $password)
     {
-        return \Hash::check($value, \Auth::user()->password);
+        return \Hash::check($password, \Auth::user()->password);
     }
 
 }

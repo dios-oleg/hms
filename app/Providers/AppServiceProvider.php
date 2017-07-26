@@ -13,7 +13,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //\Validator::extend('password', checkPassword());
         \Validator::resolver(function($translator, $data, $rules, $messages)
         {
           return new \App\Http\Requests\PasswordValidator($translator, $data, $rules, $messages);

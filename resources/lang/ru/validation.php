@@ -128,6 +128,7 @@ return [
         'old_password' => 'Текущий пароль',
         'password' => 'Новый пароль',
         'password_confirmation' => 'Подтверждение нового пароля',
+        'value' => 'Новое значение',
     ],
 
 ];

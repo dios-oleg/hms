@@ -33,7 +33,6 @@ class SystemController extends Controller
      */
     public function update(Request $request, SystemParameter $parameter)
     {
-        // TODO по сути еще тип данных нужно проверять в зависимости от типа значения, но тогда в БД нужно прописать
         $this->validate($request, [
             'value' => 'required'
         ]);
@@ -41,9 +40,7 @@ class SystemController extends Controller
         $parameter->value = $request->value;
         $parameter->save();
 
-        // TODO сообщение об успешном изменении, возврат на страницу параметров системы
-
-        return redirect('settings');
+        return redirect()->route('settings')->with(['is_changed' => true]);
     }
 
 }
