@@ -18,62 +18,24 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        // TODO проверять в конструкторе или достаточно в маршрутах, здесь нет доступа для обычного пользователя
+        $parameters = $request->only('email', 'position', 'sort', 'order');
 
-            $sql_where = array();
-            $search = array();
+        $query = User::Query();
+        $query->where('email', 'like', '%'.$parameters['email'].'%');
 
-            // Request::only('username', 'password'); except
+        if ( $parameters['position'] && $parameters['position'] != 0 ) {
+            $query->where('position_id', $parameters['position']);
+        }
 
-            if (request('email'))  {
-                $search['email'] = request('email');
-                $sql_where[] = array('email', 'like', '%'.$search['email'].'%');
-            }
+        if ($parameters['sort'] && $parameters['order']) {
+            $query->orderBy($parameters['sort'] == 'email' ? 'email' : 'last_name', $parameters['order'] == 'asc' ? 'asc' : 'desc' );
+        }
 
-            if (request('position') && request('position') != 0)  {
-                $search['position'] = request('position');
+        $users = $query->paginate(10);
 
-                // TODO несколько должностей
-                $sql_where[] = array('position_id', $search['position']);
-            }
+        $positions = Position::all();
 
-            if(request('sort') && request('order')){
-                $search['sort'] = request('sort');
-                $search['order'] = (request('order') == 'asc' || request('order') == 'desc') ? request('order') : 'asc';
-
-                switch (request('sort')) {
-                    case 'email';
-                        $sql_order = array('column' => $search['sort'], 'order' => $search['order']);
-                    break;
-                    case 'name';
-                        $sql_order = array('column' => 'last_name', 'order' => $search['order']);
-                    break;
-
-                    default :
-                        $sql_order = array('column' => 'email', 'order' => 'asc');
-
-                    break;
-                }
-
-            }else{
-                $sql_order = array('column' => 'email', 'order' => 'asc');
-            }
-
-            $users = User::where($sql_where)
-                ->orderBy($sql_order['column'], $sql_order['order'])
-                ->paginate(10);
-
-            if (request('sort') && request('order'))  {
-                $table_sort['order'] = $search['order'] == 'asc' ? 'desc' : 'asc';
-                $table_sort['sort'] = request('sort');
-            }else{
-                $table_sort = null;
-            }
-
-            $positions = Position::all();
-
-            return view('user.index', compact('users', 'search', 'table_sort', 'positions', 'request'));
-
+        return view('user.index', compact('users', 'parameters', 'positions', 'request'));
     }
 
     /**
@@ -131,7 +93,7 @@ class UserController extends Controller
     public function show(Request $request, User $user)
     {
         if( ! $user->id ) $user = \Auth::user();
-        
+
         $positions = Position::all();
 
         $roles = Roles::getConstants();

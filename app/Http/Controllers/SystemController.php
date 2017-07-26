@@ -8,15 +8,13 @@ use Illuminate\Http\Request;
 class SystemController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Отображает список всех свойств Системы и их значения.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $parameters = SystemParameter::all();
-
-        return view('settings.index', compact('parameters'));
+        return view('settings.index', ['parameters' => SystemParameter::all()]);
     }
 
     public function edit(SystemParameter $parameter)
@@ -25,7 +23,7 @@ class SystemController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Обновляет значение свойства Системы.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\SystemParameter  $systemParameter
