@@ -13,8 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-// по сути здесь можно определить является ли польватель суперюзером
-
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });

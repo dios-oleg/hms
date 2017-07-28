@@ -14,15 +14,22 @@
 
             <!-- Branding Image -->
             <a class="navbar-brand" href="{{ url('/') }}">
-                {{ config('app.name', 'Laravel') }}
+                {{ config('app.name', 'HMS') }}
             </a>
         </div>
 
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
             <!-- Left Side Of Navbar -->
-            <ul class="nav navbar-nav">
-                &nbsp;
-            </ul>
+            @if ( !Auth::guest())
+                <ul class="nav navbar-nav">
+                    <!--&nbsp;-->
+                    <li><a href="{{ route('holidays') }}">Заявки</a></li>
+                    @if (Auth::user()->can('is-leader'))
+                        <li><a href="{{ route('users') }}">Пользователи</a></li>
+                        <li><a href="{{ route('settings') }}">Система</a></li>
+                    @endif
+                </ul>
+            @endif
 
             <!-- Right Side Of Navbar -->
             <ul class="nav navbar-nav navbar-right">

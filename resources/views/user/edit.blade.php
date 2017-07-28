@@ -118,6 +118,7 @@
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
                 <button class="btn btn-primary">Обновить информацию</button>
+                <a class="btn btn-default" href="{{ route('users.reset', $user) }}">Сбросить пароль</a>
                 <a href="{{ url()->previous() }}" class="btn btn-default">Назад</a>
             </div>
         </div>

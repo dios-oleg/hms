@@ -26,14 +26,6 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
     Route::post('first', 'AppController@first')->name('first'); // TODO удалить, при входе первого пользователя (админа), у него попросит заполнить данные
 
     // Настройки
-    /*Route::resource('settings', 'SystemController', [
-        'only' => ['index', 'edit', 'update'],
-        'names' => [
-            'index' => 'settings',
-            'edit' => 'settings.edit',
-            'update' => 'settings.update'
-        ]
-    ]);*/
     Route::group(['prefix' => 'settings'], function(){
         Route::get('/', 'SystemController@index')->name('settings');
         Route::get('/{parameter}', 'SystemController@edit')->name('settings.edit');
@@ -58,13 +50,8 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
         Route::post('/', 'UserController@store')->name('users.store');
         Route::get('/{user}', 'UserController@edit')->name('users.edit');
         Route::put('/{user}', 'UserController@update')->name('users.update');
-        //Route::get('/edit/{user}', 'UserController@edit')->name('users.edit');
-        //Route::post('/update/{user}', 'UserController@update')->name('users.update');
-        //Route::get('/password', 'UserController@editPassword')->name('users.password');
-        //Route::post('/password/{user}', 'UserController@updatePassword')->name('users.update.password');
-        //Route::get('/show/{user}', 'UserController@show')->name('users.show');
+        Route::get('/{user}/reset', 'AuthController@sendLinkResetPassword')->name('users.reset');
         //Route::get('/statistics/{user}', 'UserController@statistics'); // TODO убрать или переделать
-        //Route::get('/password/reset/{user}', 'AuthController@sendLinkResetPassword')->name('users.reset');
     });
 
 });
@@ -77,7 +64,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Заявки
     Route::group(['prefix' => 'holidays'], function () {
-       Route::get('/', 'HolidaysController@index');
+        Route::get('/', 'HolidaysController@index')->name('holidays');
         Route::get('/new', 'HolidaysController@create');
         Route::post('/store', 'HolidaysController@store')->name('holidays.store');
         Route::post('/update', 'HolidaysController@update');

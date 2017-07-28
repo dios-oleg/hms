@@ -31,9 +31,5 @@ class AuthServiceProvider extends ServiceProvider
         $gate->define('is-leader', function ($user) {
             return $user->role == Roles::LEADER;
         });
-
-        $gate->define('is-blocked', function ($user) {
-            return $user->is_blocked;
-        });
     }
 }
