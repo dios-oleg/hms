@@ -67,7 +67,7 @@
                 <tr class="{{ $user->is_blocked == 1 ? 'danger' : '' }}">
                     <td> {{ $user->id }} </td>
                     <td>
-                        <a href="{{ route('users.show', $user->id) }}"--> {{ $user->email }} </a>
+                        <a href="{{ route('users.edit', $user->id) }}"--> {{ $user->email }} </a>
                     </td>
                     <td>
                         {{ $user->last_name.' '.$user->first_name.' '.$user->patronymic }}
@@ -80,7 +80,6 @@
             </tbody>
         </table>
     @else
-        <!-- TODO добавить отступ-->
         <div class="text-info text-center padding-top-20">Пользователи не найдены</div>
     @endif
 

@@ -17,9 +17,8 @@ class AuthController extends Controller{
     }
 
     public function authenticate(Request $request) {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember))  {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'is_blocked' => false], $request->remember))  {
             return redirect()->intended('/');
-            //return redirect()->intended('/');
         }
 
         // TODO неверный логин или пароль
@@ -30,11 +29,6 @@ class AuthController extends Controller{
         Auth::logout();
 
         return redirect('/');
-    }
-
-    public function showRegistrationForm() {
-        return view('auth.register');
-        // TODO убрать метод first из AppController
     }
 
     public function resetPasswordForm(Request $request, $token = null) {

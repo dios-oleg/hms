@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class SystemParameter extends Model
 {
@@ -11,6 +12,11 @@ class SystemParameter extends Model
     public function getRouteKeyName()
     {
       return 'key';
+    }
+
+    public function getCreatedAtAttribute($date)
+    {
+        return (new Carbon($date))->formatLocalized('%d.%m.%Y в %H:%M:%S');
     }
 
 }

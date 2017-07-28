@@ -84,36 +84,14 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Отображение страницы для редактирования информации пользователя.
      *
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-     // TODO удалить
-    public function show(Request $request, User $user)
-    {
-        if( ! $user->id ) $user = \Auth::user();
-
-        $positions = Position::all();
-
-        $roles = Roles::getConstants();
-
-        return view('user.show', compact('user'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    // TODO Отображение и редактирование на одной странице
     public function edit(User $user)
     {
-        if( ! $user->id ) $user = \Auth::user();
-
         $positions = Position::all();
-
         $roles = Roles::getConstants();
 
         return view('user.edit', compact('user', 'positions', 'roles'));
@@ -128,48 +106,19 @@ class UserController extends Controller
      */
     public function update(UpdateUser $request, User $user)
     {
-        // TODO нужно своя проверка на соответствие ролей и должностей, чтобы была из заданного критерия
-
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
-        $user->last_name_print = $request->last_name_print;
-        $user->patronymic = $request->patronymic;
-        $user->address = $request->address;
-
-        if (\Auth::user() == $user){
-
-            // TODO validation + мб в отдельный метод изменение пароля?
-            if ($request->old_password != null)  {
-                // проверка на корректность, а также правила ввода нового пароля
-                //$user->password = $request->password;
-            }
-
+        if( !User::isNotLastLeader() && ($blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id ){
+            return 'error'; // добавить отдельную проверку и вызвать исключение // или не может заблокировать сам себя, но при этом в провайдера добавить проверку на блокировку
+        }else{
+            $user->role = $request->role;
+            $user->is_blocked = (bool) $request->blocked;
+            $user->comment = $request->blocked ? $request->comment : NULL;
         }
 
-        // TODO Только для админа и со страницы users
-        if (\Auth::user()->can('is-leader')){
-            $user->position_id = $request->positions; // TODO нужно ли делать проверку на существование?
-
-            $blocked = $request->blocked == true;
-
-            if( !User::isNotLastLeader() && ($blocked || $request->roles != Roles::LEADER) && $user->id == \Auth::user()->id ){
-                return 'error';
-            }else{
-                $user->role = $request->roles;
-                $user->is_blocked = $blocked;
-                $user->comment = $user->is_blocked ? $request->comment : NULL;
-            }
-
-        }
-
+        $user->position_id = $request->position;
         $user->save();
+        $user->update($request->only('first_name', 'last_name', 'last_name_print', 'patronymic', 'address'));
 
-        // TODO если редактирование аккаунта, то один маршрут, если как пользователя, то другой
-        if ( \Route::currentRouteName() == 'users.account.update' ){
-            return redirect()->route('users.account');
-        }
-
-        return redirect()->route('users.show', $user->id);
+        return redirect()->route('users.edit', $user->id);
     }
 
 }

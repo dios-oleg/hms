@@ -8,9 +8,9 @@ class Position extends Model
 {
     public $timestamps = false;
 
-    protected $fillable =  ['name', 'name_print', 'priority'];
+    protected $fillable =  ['name', 'name_print'];
 
-    public function user()
+    public function users()
     {
         return $this->hasMany(User::class);
     }

@@ -18,7 +18,7 @@ class Leader
         if ($request->user()->cannot('is-leader')) {
             return redirect('/home');
         }
-        
+
         return $next($request);
     }
 }

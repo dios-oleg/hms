@@ -5,7 +5,7 @@ namespace App\Providers;
 //use Illuminate\Support\Facades\Gate as GateContract;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use App\Models\User;
+//use App\Models\User;
 use App\Enum\Roles;
 
 class AuthServiceProvider extends ServiceProvider
@@ -27,9 +27,13 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(GateContract $gate)
     {
         $this->registerPolicies($gate);
-        
+
         $gate->define('is-leader', function ($user) {
             return $user->role == Roles::LEADER;
+        });
+
+        $gate->define('is-blocked', function ($user) {
+            return $user->is_blocked;
         });
     }
 }

@@ -56,13 +56,15 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
        Route::get('/', 'UserController@index')->name('users');
         Route::get('/create', 'UserController@create')->name('users.create');
         Route::post('/', 'UserController@store')->name('users.store');
-        Route::get('/edit/{user}', 'UserController@edit')->name('users.edit');
-        Route::post('/update/{user}', 'UserController@update')->name('users.update');
+        Route::get('/{user}', 'UserController@edit')->name('users.edit');
+        Route::put('/{user}', 'UserController@update')->name('users.update');
+        //Route::get('/edit/{user}', 'UserController@edit')->name('users.edit');
+        //Route::post('/update/{user}', 'UserController@update')->name('users.update');
         //Route::get('/password', 'UserController@editPassword')->name('users.password');
         //Route::post('/password/{user}', 'UserController@updatePassword')->name('users.update.password');
-        Route::get('/show/{user}', 'UserController@show')->name('users.show');
-        Route::get('/statistics/{user}', 'UserController@statistics'); // TODO убрать или переделать
-        Route::get('/password/reset/{user}', 'AuthController@sendLinkResetPassword')->name('users.reset');
+        //Route::get('/show/{user}', 'UserController@show')->name('users.show');
+        //Route::get('/statistics/{user}', 'UserController@statistics'); // TODO убрать или переделать
+        //Route::get('/password/reset/{user}', 'AuthController@sendLinkResetPassword')->name('users.reset');
     });
 
 });

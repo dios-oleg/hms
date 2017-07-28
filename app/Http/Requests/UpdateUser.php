@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Enum\Roles;
 
 class UpdateUser extends FormRequest
 {
@@ -24,27 +25,21 @@ class UpdateUser extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'last_name_print' => 'required|max:255',
+            'first_name' => 'required|min:2|max:255',
+            'last_name' => 'required|min:2|max:255',
+            'last_name_print' => 'required|min:2|max:255',
             'patronymic' => 'required|max:255',
-            'address' => 'required|max:255',
+            'address' => 'required|min:2|max:255',
+            'position' => 'required', // из бд // можно передать массив значений, а можно дополнительный класс создать
+            'role' => 'required|in:' . implode(',', Roles::getConstants()),
+            'comment' => 'required_if:blocked,1',
+            'blocked' => 'boolean',
         ];
     }
 
-    // TODO сообщения перенести в переводы, если одни и те же сообщения буду использоваться для нескольких реквестов
     public function messages() {
         return [
-            'first_name.required' => 'Необходимо указать Имя',
-            'first_name.max' => 'Необходимо указать корректное Имя',
-            'last_name.required' => 'Необходимо указать Фамилию',
-            'last_name.max' => 'Необходимо указать корректную Фамилию',
-            'last_name_print.required' => 'Необходимо указать Фамилию в родительном падеже',
-            'last_name_print.max' => 'Необходимо указать корректную Фамилию',
-            'patronymic.required' => 'Необходимо указать Отчество',
-            'patronymic.max' => 'Необходимо указать корректное Отчество',
-            'address.required' => 'Необходимо указать Адрес',
-            'address.max' => 'Необходимо указать корректный Адрес',
+            'comment.required_if' => 'Необходимо указать причину блокировки.',
         ];
     }
 }
