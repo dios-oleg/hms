@@ -24,9 +24,6 @@
 Route::get('/', 'AppController@index')->name('app');
 
 Route::group(['middleware' => ['auth', 'leader' , 'blocked']], function () {
-
-    Route::post('first', 'AppController@first')->name('first'); // TODO удалить, при входе первого пользователя (админа), у него попросит заполнить данные
-
     // Настройки
     Route::group(['prefix' => 'settings'], function(){
         Route::get('/', 'SystemController@index')->name('settings');
