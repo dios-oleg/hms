@@ -7,7 +7,9 @@ use App\Enum\Roles;
 use Illuminate\Http\Request;
 use App\Models\Position;
 use Mail;
+use Illuminate\Support\Str;
 use App\Http\Requests\{UpdateUser, StoreUser};
+use App\Jobs\SendResetPassword;
 
 class UserController extends Controller
 {
@@ -65,9 +67,9 @@ class UserController extends Controller
             'last_name' => ' ',
             'last_name_print' => ' ',
             'patronymic' => ' ',
-            'email' => request('email'),
+            'email' => $request->email,
             'address' => ' ',
-            'position_id' => request('position'),
+            'position_id' => $request->position,
             'password' => bin2hex(random_bytes(25)),
         ]);
 
@@ -78,9 +80,7 @@ class UserController extends Controller
 
         });*/
 
-        // TODO если все хорошо, то возврат на страницу пользователей или сообщение о создании пользователя
-        // $user_created = true;
-        return redirect()->route('users'); // ->withInput($request->except('email'))
+        return redirect()->route('users')->with(['success' => true]);
     }
 
     /**
@@ -118,7 +118,23 @@ class UserController extends Controller
         $user->save();
         $user->update($request->only('first_name', 'last_name', 'last_name_print', 'patronymic', 'address'));
 
-        return redirect()->route('users.edit', $user->id);
+        return redirect()->route('users.edit', $user->id)->with(['success' => true]);
+    }
+    
+    /**
+     * Отправит ссылнку для восстановления (задания нового) пароля.
+     *
+     * @param  \App\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function resetPassword(User $user) {
+        $token = Str::random(60);
+        $password_reset = new \App\Models\Password_reset(['token' => $token]);
+        $user->password_reset()->save($password_reset);
+
+        $this->dispatch(new SendResetPassword($user, $token)); 
+
+        return redirect()->route('users.edit', $user->id)->with(['success' => true, 'reset_password' => true]);
     }
 
 }

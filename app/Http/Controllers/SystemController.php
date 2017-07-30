@@ -38,7 +38,7 @@ class SystemController extends Controller
         $parameter->value = $request->value;
         $parameter->save();
 
-        return redirect()->route('settings')->with(['is_changed' => true]);
+        return redirect()->route('settings')->with(['success' => true]);
     }
 
 }

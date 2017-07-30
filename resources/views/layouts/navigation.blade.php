@@ -26,6 +26,7 @@
                     <li><a href="{{ route('holidays') }}">Заявки</a></li>
                     @if (Auth::user()->can('is-leader'))
                         <li><a href="{{ route('users') }}">Пользователи</a></li>
+                        <li><a href="{{ route('positions') }}">Справочник должностей</a></li>
                         <li><a href="{{ route('settings') }}">Система</a></li>
                     @endif
                 </ul>

@@ -7,8 +7,10 @@
     <form method="POST" action="{{ route('users.update', $user) }}" class="form-horizontal">
         {{ csrf_field() }}
         {{ method_field('PUT') }}
+        
+        @include('alerts.errors', ['title' => 'Ошибка! Данные не были обновлены!'])
 
-        @include('alerts.errors', ['title' => 'Ошибка! Запись не была обновлена!'])
+        @include('alerts.success', ['title' => session('reset_password') ? 'Сообщение о восстановлении пароля было отправлено на почту!' : null])
 
         <div class="form-group">
             <div class="control-label col-sm-3">

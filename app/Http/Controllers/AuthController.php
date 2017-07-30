@@ -78,13 +78,13 @@ class AuthController extends Controller{
         return view('auth.passwords.email');
     }
 
-    public function sendLinkResetPassword(Request $request) {
+    public function sendLinkResetPassword(Request $request, User $user) {
         // TODO ДАнный метод использовать для восстановления забытого пароля и для задания пароля Новым пользователям
         // TODO отправка ссылки для восстановления пароля
         // TODO validate Email
-
+        dd($user);
         // TODO check email
-        $user = \App\Models\User::find(1);
+        //$user = \App\Models\User::find($);
 
         $token = Str::random(60);
 

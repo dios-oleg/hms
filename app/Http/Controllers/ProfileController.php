@@ -25,6 +25,10 @@ class ProfileController extends Controller
      */
     public function update(UpdateProfile $request)
     {
+        // TODO забыл сделать обязательное подтверждение для изменения личных данных
+        // нужно ввести пароль
+        
+        
         $user = \Auth::user();
 
         // Если введен новый пароль, то осуществляется проверка.
@@ -40,7 +44,7 @@ class ProfileController extends Controller
 
         $user->update($request->all());
 
-        return redirect()->route('profile')->with('is_changed', true);
+        return redirect()->route('profile')->with('success', true);
     }
 
     public function statistics(){

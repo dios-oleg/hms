@@ -4,6 +4,8 @@
 
 @section('content')
     <form method="GET" action="{{ route('users') }}" class="form-inline">
+        @include('alerts.success', ['title' => 'Новый пользователь был успешно создан!'])
+        
         <div class="form-group">
             <label for="email">Email</label>
             <input type="text" id="email" name="email" placeholder="Введите Email" class="form-control" value=" {{ $request->email }}">

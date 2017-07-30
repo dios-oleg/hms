@@ -1,2 +1,2 @@
-<a href="{{ route('auth.reset.form', $token) }}">Восстановление пароля</a>
+<a href="{{ route('auth.reset.form', $token) }}">Задание нового пароля</a>
 

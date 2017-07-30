@@ -1,4 +1,4 @@
-@if (session('is_changed'))
+@if (session('success'))
     <div class="alert alert-success">
         @if ( isset($title) )
             {{ $title }}

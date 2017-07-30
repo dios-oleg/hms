@@ -35,12 +35,11 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
     // Должности
     Route::group(['prefix' => 'positions'], function () {
         Route::get('/', 'PositionController@index')->name('positions');
-        Route::get('/new', 'PositionController@new')->name('positions.create');
-        Route::get('/delete/{position}', 'PositionController@delete')->name('positions.delete');
-        Route::post('/store', 'PositionController@store')->name('positions.store');
-        Route::post('/update', 'PositionController@update')->name('positions.update');
-        Route::get('/show/{position}', 'PositionController@show')->name('positions.show');
-        Route::get('/edit/{position}', 'PositionController@show')->name('positions.edit');;
+        Route::get('/create', 'PositionController@create')->name('positions.create');
+        Route::post('/', 'PositionController@store')->name('positions.store');
+        Route::delete('/{position}', 'PositionController@destroy')->name('positions.delete');
+        Route::get('/{position}', 'PositionController@edit')->name('positions.edit');;
+        Route::put('/{position}', 'PositionController@update')->name('positions.update');
     });
 
     // Пользователи
@@ -50,7 +49,7 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
         Route::post('/', 'UserController@store')->name('users.store');
         Route::get('/{user}', 'UserController@edit')->name('users.edit');
         Route::put('/{user}', 'UserController@update')->name('users.update');
-        Route::get('/{user}/reset', 'AuthController@sendLinkResetPassword')->name('users.reset');
+        Route::get('/{user}/reset', 'UserController@resetPassword')->name('users.reset');
         //Route::get('/statistics/{user}', 'UserController@statistics'); // TODO убрать или переделать
     });
 
