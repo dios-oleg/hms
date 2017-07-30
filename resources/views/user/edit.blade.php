@@ -9,6 +9,8 @@
         {{ method_field('PUT') }}
         
         @include('alerts.errors', ['title' => 'Ошибка! Данные не были обновлены!'])
+        @include('alerts.error', ['title' => 'Ошибка! Вы не можете сами себя заблокировать или изменить себе роль!'])
+        {{--@include('alerts.error', ['title' => 'Ошибка! Нельзя оставить систему без администраторов!'])--}}
 
         @include('alerts.success', ['title' => session('reset_password') ? 'Сообщение о восстановлении пароля было отправлено на почту!' : null])
 
@@ -121,7 +123,7 @@
             <div class="col-sm-offset-3 col-sm-9">
                 <button class="btn btn-primary">Обновить информацию</button>
                 <a class="btn btn-default" href="{{ route('users.reset', $user) }}">Сбросить пароль</a>
-                <a href="{{ url()->previous() }}" class="btn btn-default">Назад</a>
+                <a href="{{ route('users') }}" class="btn btn-default">Назад</a>
             </div>
         </div>
     </form>

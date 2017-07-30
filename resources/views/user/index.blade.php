@@ -3,7 +3,13 @@
 @section('title', 'Список пользователей')
 
 @section('content')
-    <form method="GET" action="{{ route('users') }}" class="form-inline">
+    <div class="row">
+        <div class="col-sm-12">
+            <a href="{{ route('users.create') }}" class="btn btn-success">Создать пользователя</a>
+        </div>
+    </div>
+    
+    <form method="GET" action="{{ route('users') }}" class="form-inline margin-top-10">
         @include('alerts.success', ['title' => 'Новый пользователь был успешно создан!'])
         
         <div class="form-group">

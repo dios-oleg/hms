@@ -25,9 +25,7 @@ class ProfileController extends Controller
      */
     public function update(UpdateProfile $request)
     {
-        // TODO забыл сделать обязательное подтверждение для изменения личных данных
-        // нужно ввести пароль
-        
+        // TODO забыл сделать обязательное подтверждение для изменения личных данных, нужно ввести пароль
         
         $user = \Auth::user();
 

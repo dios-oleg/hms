@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Enum\Roles;
 use Illuminate\Http\Request;
 use App\Models\Position;
-use Mail;
 use Illuminate\Support\Str;
 use App\Http\Requests\{UpdateUser, StoreUser};
 use App\Jobs\SendResetPassword;
@@ -62,23 +61,25 @@ class UserController extends Controller
     public function store(StoreUser $request)
     {
         // Пользователь сам должен заполнить пустые поля
-        $user = User::create([
+        $user = new User([
             'first_name' => ' ',
             'last_name' => ' ',
             'last_name_print' => ' ',
             'patronymic' => ' ',
-            'email' => $request->email,
             'address' => ' ',
-            'position_id' => $request->position,
-            'password' => bin2hex(random_bytes(25)),
         ]);
+        
+        $user->email = $request->email;
+        $user->position_id = $request->position;
+        $user->password = bin2hex(random_bytes(25));
+        $user->save();
 
-        // TODO в очередь и ссылка на восстановление пароля
-        /*Mail::send('emails.created_password', ['password' => $password], function ($m) use ($user) {
-            //$m->from('no-reply@hms.by', 'HMS');
-            $m->to('dmitrochenkooleg@gmail.com')->subject('Добро пожаловать в HMS!');
+        // TODO можно объединить с восстановлением пароля, только заменить сообщение, да ваще проще трейт использовать
+        $token = Str::random(60);
+        $password_reset = new \App\Models\Password_reset(['token' => $token]);
+        $user->password_reset()->save($password_reset);
 
-        });*/
+        $this->dispatch(new SendResetPassword($user, $token)); 
 
         return redirect()->route('users')->with(['success' => true]);
     }
@@ -106,8 +107,10 @@ class UserController extends Controller
      */
     public function update(UpdateUser $request, User $user)
     {
-        if( !User::isNotLastLeader() && ($blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id ){
-            return 'error'; // добавить отдельную проверку и вызвать исключение // или не может заблокировать сам себя, но при этом в провайдера добавить проверку на блокировку
+        
+        //if( !User::isNotLastLeader() && ($request->blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id ){ // нельзя оставить систему без администратора
+        if( ($request->blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id ){ // пользователь не может сам себя заблокировать или изменить роль
+            return redirect()->route('users.edit', $user->id)->with(['error' => true]);
         }else{
             $user->role = $request->role;
             $user->is_blocked = (bool) $request->blocked;
@@ -130,6 +133,7 @@ class UserController extends Controller
     public function resetPassword(User $user) {
         $token = Str::random(60);
         $password_reset = new \App\Models\Password_reset(['token' => $token]);
+        // TODO, у пользователя может быть только одна ссылка, т.е. таблица 1:1
         $user->password_reset()->save($password_reset);
 
         $this->dispatch(new SendResetPassword($user, $token)); 

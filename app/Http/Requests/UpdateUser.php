@@ -30,7 +30,7 @@ class UpdateUser extends FormRequest
             'last_name_print' => 'required|min:2|max:255',
             'patronymic' => 'required|max:255',
             'address' => 'required|min:2|max:255',
-            'position' => 'required', // из бд // можно передать массив значений, а можно дополнительный класс создать
+            'position' => 'required|exists:positions,id',
             'role' => 'required|in:' . implode(',', Roles::getConstants()),
             'comment' => 'required_if:blocked,1',
             'blocked' => 'boolean',

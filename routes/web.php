@@ -19,9 +19,11 @@
 //руководитель - открыть дашборд руководителя
 //пользователь - дашборд пользователя
 
+// TODO пользователь не может выполнять действия, пока его профиль не заполнен
+
 Route::get('/', 'AppController@index')->name('app');
 
-Route::group(['middleware' => ['auth', 'leader']], function () {
+Route::group(['middleware' => ['auth', 'leader' , 'blocked']], function () {
 
     Route::post('first', 'AppController@first')->name('first'); // TODO удалить, при входе первого пользователя (админа), у него попросит заполнить данные
 
@@ -55,7 +57,7 @@ Route::group(['middleware' => ['auth', 'leader']], function () {
 
 });
 
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => ['auth', 'blocked']], function () {
     // Страница пользователя
     Route::get('/profile', 'ProfileController@index')->name('profile');
     Route::put('/profile', 'ProfileController@update')->name('profile.update');
@@ -74,7 +76,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('logout', 'AuthController@logout')->name('auth.logout');
 });
 
-//Auth::routes();
 Route::group(['middleware' => 'guest'], function () {
     Route::get('login', 'AuthController@showLoginForm')->name('auth.login.form');
     Route::post('login', 'AuthController@authenticate')->name('auth.login');
