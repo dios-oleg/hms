@@ -13,13 +13,13 @@ class HolidaysController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(User $user)
+    public function index()
     {
         // TODO отображение всех заявок или определение вызова методов
         if (empty($user)){
             $holidays = Holiday::all();
         }else{
-            $holidays = Holiday::where('user_id', $user)->get();
+            $holidays =
         }
 
         return $holidays;

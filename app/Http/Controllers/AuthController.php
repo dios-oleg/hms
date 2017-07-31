@@ -40,21 +40,27 @@ class AuthController extends Controller{
 
     public function resetPassword(Request $request)
     {
+        // если срок действия токена истек или он отсутствует, то все равно происходит имитация восстановления и предлагает заново отправить сообщение
+
+        //TODO validation
+        $this->validate($request, [
+            'email' => 'required|email',
+            'password' => 'required|alpha_dash|max:255|min:6|confirmed',
+        ]);
+
         $user = User::where('email', $request->email)->first();
 
-        if ( !$user ) {
-            return view('auth.passwords.timeout');
-        }
+        if ( $user ) {
+            $password_reset = $user->password_reset()->latest()->first();
 
-        $password_reset = $user->password_reset()->latest()->first();
+            if( $password_reset != null && $password_reset == $request->token && (Carbon::now()->timestamp - Carbon::parse($password_reset->created_at)->timestamp) < (config('auth.passwords.users.expire') * 60) ){
 
-        if( $password_reset != null && $password_reset == $request->token && (Carbon::now()->timestamp - Carbon::parse($password_reset->created_at)->timestamp) < (config('auth.passwords.users.expire') * 60) ){
+                $user->password = \Hash::make($request->password);
+                $user->save();
+                $user->password_reset()->delete();
 
-            $user->password = \Hash::make($request->password);
-            $user->save();
-            $user->password_reset()->delete();
-
-            return redirect()->route('auth.login');
+                return redirect()->route('auth.login');
+            }
         }
 
         return view('auth.passwords.timeout');

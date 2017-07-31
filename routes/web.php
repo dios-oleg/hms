@@ -63,11 +63,11 @@ Route::group(['middleware' => ['auth', 'blocked']], function () {
     // Заявки
     Route::group(['prefix' => 'holidays'], function () {
         Route::get('/', 'HolidaysController@index')->name('holidays');
-        Route::get('/new', 'HolidaysController@create');
-        Route::post('/store', 'HolidaysController@store')->name('holidays.store');
-        Route::post('/update', 'HolidaysController@update');
-        Route::get('/edit/{holiday}', 'HolidaysController@edit');
-        Route::get('/show/{holiday}', 'HolidaysController@show');
+        Route::get('/create', 'HolidaysController@create')->name('holidays.create');
+        Route::post('/', 'HolidaysController@store')->name('holidays.store');
+        Route::get('/{holiday}', 'HolidaysController@edit')->name('holidays.edit');
+        Route::put('/{holiday}', 'HolidaysController@update')->name('holidays.update');
+        Route::delete('/{holiday}', 'HolidaysController@update')->name('holidays.delete');
     });
 
     Route::get('logout', 'AuthController@logout')->name('auth.logout');
