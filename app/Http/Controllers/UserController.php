@@ -79,6 +79,7 @@ class UserController extends Controller
         $password_reset = new \App\Models\Password_reset(['token' => $token]);
         $user->password_reset()->save($password_reset);
 
+        $view = 'emails.specify_password';
         $this->dispatch(new SendResetPassword($user, $token)); 
 
         return redirect()->route('users')->with(['success' => true]);
@@ -131,6 +132,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function resetPassword(User $user) {
+        $view = 'emails.reset_password';
         $token = Str::random(60);
         $password_reset = new \App\Models\Password_reset(['token' => $token]);
         // TODO, у пользователя может быть только одна ссылка, т.е. таблица 1:1

@@ -41,8 +41,6 @@ class AuthController extends Controller{
     public function resetPassword(Request $request)
     {
         // если срок действия токена истек или он отсутствует, то все равно происходит имитация восстановления и предлагает заново отправить сообщение
-
-        //TODO validation
         $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required|alpha_dash|max:255|min:6|confirmed',
@@ -66,11 +64,13 @@ class AuthController extends Controller{
         return view('auth.passwords.timeout');
     }
 
-    public function sendLinkResetPasswordForm() {
+    public function sendLinkResetPasswordForm() 
+    {
         return view('auth.passwords.email');
     }
 
-    public function sendLinkResetPassword(Request $request) {
+    public function sendLinkResetPassword(Request $request) 
+    {
         $this->validate($request, [
             'email' => 'required|email|exists:users,email', // или, если адрес не найден, то ничего не делать
         ]);
@@ -80,6 +80,8 @@ class AuthController extends Controller{
         $token = Str::random(60);
         $password_reset = new \App\Models\Password_reset(['token' => $token]);
         $user->password_reset()->save($password_reset);
+        
+        $view = 'emails.reset_password';
 
         //TODO отправить сообщение о восстановлении пароля
 
