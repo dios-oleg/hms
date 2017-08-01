@@ -48,7 +48,7 @@ Route::group(['middleware' => ['auth', 'leader' , 'blocked']], function () {
         Route::post('/', 'UserController@store')->name('users.store');
         Route::get('/{user}', 'UserController@edit')->name('users.edit');
         Route::put('/{user}', 'UserController@update')->name('users.update');
-        Route::get('/{user}/reset', 'UserController@resetPassword')->name('users.reset');
+        Route::get('/{user}/reset', 'PasswordController@sendLinkCreatePassword')->name('users.reset');
         //Route::get('/statistics/{user}', 'UserController@statistics'); // TODO убрать или переделать
     });
 
@@ -76,10 +76,10 @@ Route::group(['middleware' => ['auth', 'blocked']], function () {
 Route::group(['middleware' => 'guest'], function () {
     Route::get('login', 'AuthController@showLoginForm')->name('auth.login.form');
     Route::post('login', 'AuthController@authenticate')->name('auth.login');
-    Route::get('reset/{token?}', 'AuthController@resetPasswordForm')->name('auth.reset.form');
-    Route::post('reset', 'AuthController@resetPassword')->name('auth.reset');
-    Route::get('recovery', 'AuthController@sendLinkResetPasswordForm')->name('auth.recovery');
-    Route::post('recovery', 'AuthController@sendLinkResetPassword')->name('auth.sendmail');
+    Route::get('reset/{token?}', 'PasswordController@resetPasswordForm')->name('auth.reset.form');
+    Route::post('reset', 'PasswordController@resetPassword')->name('auth.reset');
+    Route::get('recovery', 'PasswordController@sendLinkResetPasswordForm')->name('auth.recovery');
+    Route::post('recovery', 'PasswordController@sendLinkResetPassword')->name('auth.sendmail');
 });
 
 Route::get('/home', 'HomeController@index')->name('home');

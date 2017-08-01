@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Position;
 use App\Enum\Roles;
 use Illuminate\Http\Request;
-use App\Models\Position;
-use Illuminate\Support\Str;
 use App\Http\Requests\{UpdateUser, StoreUser};
-use App\Jobs\SendResetPassword;
+use App\Http\Controllers\PasswordController;
 
 class UserController extends Controller
 {
@@ -46,7 +45,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $positions = Position::all(); // TODO если ничего нет, то добавление должности или сообщение || база не дб пуста
+        $positions = Position::all();
         $roles = Roles::getConstants();
 
         return view('user.create', compact('positions', 'roles'));
@@ -68,19 +67,13 @@ class UserController extends Controller
             'patronymic' => ' ',
             'address' => ' ',
         ]);
-        
+
         $user->email = $request->email;
         $user->position_id = $request->position;
         $user->password = bin2hex(random_bytes(25));
         $user->save();
 
-        // TODO можно объединить с восстановлением пароля, только заменить сообщение, да ваще проще трейт использовать
-        $token = Str::random(60);
-        $password_reset = new \App\Models\Password_reset(['token' => $token]);
-        $user->password_reset()->save($password_reset);
-
-        $view = 'emails.specify_password';
-        $this->dispatch(new SendResetPassword($user, $token)); 
+        PasswordController::sendMail($user, 'emails.specify_password');
 
         return redirect()->route('users')->with(['success' => true]);
     }
@@ -108,7 +101,6 @@ class UserController extends Controller
      */
     public function update(UpdateUser $request, User $user)
     {
-        
         //if( !User::isNotLastLeader() && ($request->blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id ){ // нельзя оставить систему без администратора
         if( ($request->blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id ){ // пользователь не может сам себя заблокировать или изменить роль
             return redirect()->route('users.edit', $user->id)->with(['error' => true]);
@@ -124,23 +116,4 @@ class UserController extends Controller
 
         return redirect()->route('users.edit', $user->id)->with(['success' => true]);
     }
-    
-    /**
-     * Отправит ссылнку для восстановления (задания нового) пароля.
-     *
-     * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function resetPassword(User $user) {
-        $view = 'emails.reset_password';
-        $token = Str::random(60);
-        $password_reset = new \App\Models\Password_reset(['token' => $token]);
-        // TODO, у пользователя может быть только одна ссылка, т.е. таблица 1:1
-        $user->password_reset()->save($password_reset);
-
-        $this->dispatch(new SendResetPassword($user, $token)); 
-
-        return redirect()->route('users.edit', $user->id)->with(['success' => true, 'reset_password' => true]);
-    }
-
 }

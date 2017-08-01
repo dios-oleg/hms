@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateProfile;
 class ProfileController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Отображает профиль пользователя.
      *
      * @return \Illuminate\Http\Response
      */
@@ -20,13 +20,13 @@ class ProfileController extends Controller
     /**
      * Обновление информации пользователя.
      *
-     * @param  \app\Http\Requests\UpdateProfile  $request
+     * @param  \App\Http\Requests\UpdateProfile  $request
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateProfile $request)
     {
         // TODO забыл сделать обязательное подтверждение для изменения личных данных, нужно ввести пароль
-        
+
         $user = \Auth::user();
 
         // Если введен новый пароль, то осуществляется проверка.

@@ -8,10 +8,10 @@
             <a href="{{ route('users.create') }}" class="btn btn-success">Создать пользователя</a>
         </div>
     </div>
-    
+
     <form method="GET" action="{{ route('users') }}" class="form-inline margin-top-10">
         @include('alerts.success', ['title' => 'Новый пользователь был успешно создан!'])
-        
+
         <div class="form-group">
             <label for="email">Email</label>
             <input type="text" id="email" name="email" placeholder="Введите Email" class="form-control" value=" {{ $request->email }}">
@@ -21,7 +21,7 @@
             <select name="position" id="position" class="selectpicker" data-live-search="true" title="Выбирите должность">
                 <option value="0">Все</option>
                 @foreach($positions as $position)
-                    <option value="{{ $position->id }}">{{ $position->name }}</option>
+                    <option value="{{ $position->id }}" {{ $request->position == $position->id ? 'selected' : '' }}>{{ $position->name }}</option>
                 @endforeach
             </select>
         </div>

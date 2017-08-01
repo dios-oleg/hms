@@ -9,22 +9,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Models\User;
 use Illuminate\Contracts\Mail\Mailer;
-//use Mail;
 
 class SendResetPassword implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $user, $token;
+    private $user, $token, $view = 'emails.reset_password';
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(User $user, $token)
+    public function __construct(User $user, $token, $view = null)
     {
         $this->user = $user;
         $this->token = $token;
+        $this->view = $view != null ? $view : $this->view;
     }
 
     /**
@@ -35,8 +35,8 @@ class SendResetPassword implements ShouldQueue
     public function handle(Mailer $mailer)
     {
         $user = $this->user;
-        
-        $mailer->send('emails.reset_password', ['user' => $user, 'token' => $this->token], function ($m) use ($user){
+
+        $mailer->send($this->view, ['user' => $user, 'token' => $this->token], function ($m) use ($user){
            $m->from('fff@ff.by', 'YA');
             //$m->to($user->email, $user->name)->subject('Восстановление пароля!');
            $m->to('dmitrochenkooleg@gmail.com', $user->name)->subject('Восстановление пароля!');
