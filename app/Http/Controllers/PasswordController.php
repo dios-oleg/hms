@@ -98,13 +98,15 @@ class PasswordController extends Controller{
      * или представлением по умолчанию (восстановление пароля).
      *
      * @param  \App\User  $user
-     * @param  String  $token
+     * @param  String  $view
+     * @param  String  $subject
+     * @return void
      */
-    static public function sendMail($user, $view = 'emails.reset_password'){
+    static public function sendMail($user, $view = 'emails.reset_password', $subject = null){
         $token = Str::random(60);
         $password_reset = new \App\Models\Password_reset(['token' => $token]);
         $user->password_reset()->save($password_reset);
 
-        $this->dispatch(new SendResetPassword($user, $token));
+        dispatch(new SendResetPassword($user, $token, $view, $subject));
     }
 }

@@ -73,7 +73,7 @@ class UserController extends Controller
         $user->password = bin2hex(random_bytes(25));
         $user->save();
 
-        PasswordController::sendMail($user, 'emails.specify_password');
+        PasswordController::sendMail($user, 'emails.specify_password', 'Задание пароля');
 
         return redirect()->route('users')->with(['success' => true]);
     }
