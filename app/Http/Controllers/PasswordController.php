@@ -5,10 +5,54 @@ use Illuminate\Http\Request;
 use App\Models\{User, Password_reset};
 use Carbon\Carbon;
 use Illuminate\Support\Str;
-use App\Jobs\SendResetPassword;
+use App\Mail\ResetPassword;
+use App\Services\SendLinkResetPassword;
 
-class PasswordController extends Controller{
+class PasswordController extends Controller
+{
 
+    /**
+     * Отобразит форму для ввода почты/логина для отправки письма на почту
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendLinkResetPasswordForm()
+    {
+        return view('auth.passwords.email');
+    }
+
+    /**
+     * Отправит ссылку для восстановления пароля.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function sendLinkResetPassword(Request $request)
+    {
+        // TODO в request
+        $this->validate($request, [
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        $user = \App\Models\User::where('email', $request->email)->first();
+
+        SendLinkResetPassword::sendMessage($user);
+
+        return view('auth.passwords.message');
+    }
+
+    /**
+     * Отправит ссылку для задания пароля.
+     *
+     * @param  \App\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function sendLinkCreatePassword(User $user)
+    {
+        $this->sendMail($user);
+        // TODO удалить вместе с проверкой и отображением в представлении
+        return redirect()->route('users.edit', $user->id)->with(['success' => true, 'reset_password' => true]);
+    }
     /**
      * Отображает форму для ввода логина, с последующим восстановлением пароля
      *
@@ -39,6 +83,12 @@ class PasswordController extends Controller{
         if ( $user ) {
             $password_reset = $user->password_reset()->latest()->first();
 
+   /*$date = Carbon::parse('2016-09-17 11:00:00');
+    $now = Carbon::now();
+
+    $diff = $date->diffInDays($now);*/
+//TODO время сравнить с помощью методов карбон
+
             if( $password_reset != null && $password_reset->token == $request->token && (Carbon::now()->timestamp - Carbon::parse($password_reset->created_at)->timestamp) < (config('auth.passwords.users.expire') * 60) ) {
                 $user->password = \Hash::make($request->password);
                 $user->save();
@@ -49,64 +99,5 @@ class PasswordController extends Controller{
         }
 
         return view('auth.passwords.timeout');
-    }
-
-    /**
-     * Отобразит форму для ввода почты/логина для отправки письма на почту
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function sendLinkResetPasswordForm()
-    {
-        return view('auth.passwords.email');
-    }
-
-    /**
-     * Отправит ссылку для восстановления пароля.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function sendLinkResetPassword(Request $request)
-    {
-        $this->validate($request, [
-            'email' => 'required|email|exists:users,email', // или, если адрес не найден, то ничего не делать
-        ]);
-
-        $user = \App\Models\User::where('email', $request->email)->first();
-
-        $this->sendMail($user);
-
-        return view('auth.passwords.message');
-    }
-
-    /**
-     * Отправит ссылку для задания пароля.
-     *
-     * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function sendLinkCreatePassword(User $user)
-    {
-        $this->sendMail($user);
-
-        return redirect()->route('users.edit', $user->id)->with(['success' => true, 'reset_password' => true]);
-    }
-
-    /**
-     * Отправит сообщение на почту пользователя с указанным представлением
-     * или представлением по умолчанию (восстановление пароля).
-     *
-     * @param  \App\User  $user
-     * @param  String  $view
-     * @param  String  $subject
-     * @return void
-     */
-    static public function sendMail($user, $view = 'emails.reset_password', $subject = null){
-        $token = Str::random(60);
-        $password_reset = new \App\Models\Password_reset(['token' => $token]);
-        $user->password_reset()->save($password_reset);
-
-        dispatch(new SendResetPassword($user, $token, $view, $subject));
     }
 }

@@ -43,7 +43,7 @@ class User extends Authenticatable
     }
 
     public function password_reset() {
-        return $this->hasMany(\App\Models\Password_reset::class);
+        return $this->hasOne(\App\Models\Password_reset::class, 'id'); 
     }
 
     public function scopeActive($query)

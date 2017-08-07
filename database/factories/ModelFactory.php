@@ -15,7 +15,7 @@ use App\Models\Position;
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
-    static $password;
+    static $password; // TODO а нужен ли?
 
     $faker = Faker\Factory::create('ru_RU');
 
@@ -38,7 +38,7 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
         'role' => Roles::EMPLOYEE,
-        'position_id' => rand(3, Position::count()), // TODO использовать рандом из БД rand(1, Position::count())
+        'position_id' => rand(3, Position::count()),
         'is_blocked' => $dismissed,
         'comment' => $dismissed ? null : 'Уволен',
     ];

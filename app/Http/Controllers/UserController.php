@@ -7,7 +7,7 @@ use App\Models\Position;
 use App\Enum\Roles;
 use Illuminate\Http\Request;
 use App\Http\Requests\{UpdateUser, StoreUser};
-use App\Http\Controllers\PasswordController;
+use App\Services\SendLinkSetPassword;
 
 class UserController extends Controller
 {
@@ -20,7 +20,7 @@ class UserController extends Controller
     {
         $parameters = $request->only('email', 'position', 'sort', 'order');
 
-        $query = User::Query();
+        $query = User::query();
         $query->where('email', 'like', '%'.$parameters['email'].'%');
 
         if ( $parameters['position'] && $parameters['position'] != 0 ) {
@@ -59,21 +59,12 @@ class UserController extends Controller
      */
     public function store(StoreUser $request)
     {
-        // Пользователь сам должен заполнить пустые поля
-        $user = new User([
-            'first_name' => ' ',
-            'last_name' => ' ',
-            'last_name_print' => ' ',
-            'patronymic' => ' ',
-            'address' => ' ',
-        ]);
-
+        $user = new User();
         $user->email = $request->email;
         $user->position_id = $request->position;
-        $user->password = bin2hex(random_bytes(25));
         $user->save();
-
-        PasswordController::sendMail($user, 'emails.specify_password', 'Задание пароля');
+        
+        SendLinkSetPassword::sendMessage($user);
 
         return redirect()->route('users')->with(['success' => true]);
     }
@@ -95,13 +86,13 @@ class UserController extends Controller
     /**
      * Обновит информацию пользователя.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\UpdateUser  $request
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateUser $request, User $user)
     {
-        //if( !User::isNotLastLeader() && ($request->blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id ){ // нельзя оставить систему без администратора
+        //if( !User::isNotLastLeader() && ($request->blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id ){ // нельзя оставить систему без администратора // TODO проверка в отдельном методе и месте
         if( ($request->blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id ){ // пользователь не может сам себя заблокировать или изменить роль
             return redirect()->route('users.edit', $user->id)->with(['error' => true]);
         }else{

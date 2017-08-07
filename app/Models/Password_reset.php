@@ -14,4 +14,9 @@ class Password_reset extends Model
     {
         return $this->belongsTo(User::class);
     }
+    
+    /*public function getCreatedAtAttribute($date)
+    {
+        return (new Carbon($date))->formatLocalized('%d.%m.%Y в %H:%M:%S');
+    }*/
 }
