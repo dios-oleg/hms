@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Enum\Roles;
 
 class Users extends Seeder
@@ -13,10 +12,9 @@ class Users extends Seeder
      */
     public function run()
     {
-        User::truncate();
-
-        // TODO можем эти два метода убрать и задать все через фабрику
-        User::create([
+        DB::table('users')->truncate();
+        
+        factory(App\Models\User::class, 1)->create([
            'first_name' => 'Олег',
            'last_name' => 'Дмитроченко',
            'last_name_print' => 'Дмитроченко',
@@ -27,9 +25,9 @@ class Users extends Seeder
            'position_id' => '3',
            'password' => bcrypt('123456'),
         ]);
-
-        User::create([
-           'first_name' => 'Павел',
+        
+        factory(App\Models\User::class, 1)->create([
+            'first_name' => 'Павел',
            'last_name' => 'Жуков',
            'last_name_print' => 'Жукова',
            'patronymic' => 'Владимирович',
@@ -40,10 +38,6 @@ class Users extends Seeder
            'password' => bcrypt('123456'),
         ]);
 
-        factory(App\Models\User::class, 150)->create([
-            'role' => Roles::LEADER,
-        ]);
-
-        factory(App\Models\User::class, 5000)->create();
+        factory(App\Models\User::class, 50)->create();
     }
 }

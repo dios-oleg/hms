@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call(Positions::class);
         $this->call(Users::class);
         $this->call(Parameters::class);
-       $this->call(PasswordResets::class);
+        $this->call(PasswordResets::class);
     }
 }
 
