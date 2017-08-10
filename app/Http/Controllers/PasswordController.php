@@ -34,7 +34,7 @@ class PasswordController extends Controller
             'email' => 'required|email|exists:users,email',
         ]);
 
-        $user = \App\Models\User::where('email', $request->email)->first();
+        $user = \App\Models\User::where('email', $request->email)->first(); // TODO OrFail
 
         SendLinkResetPassword::sendMessage($user);
 
@@ -47,12 +47,12 @@ class PasswordController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function sendLinkCreatePassword(User $user)
+    /*public function sendLinkCreatePassword(User $user)
     {
         $this->sendMail($user);
         // TODO удалить вместе с проверкой и отображением в представлении
         return redirect()->route('users.edit', $user->id)->with(['success' => true, 'reset_password' => true]);
-    }
+    }*/
     /**
      * Отображает форму для ввода логина, с последующим восстановлением пароля
      *
@@ -72,21 +72,22 @@ class PasswordController extends Controller
      */
     public function resetPassword(Request $request)
     {
-        // если срок действия токена истек или он отсутствует, то все равно происходит имитация восстановления и предлагает заново отправить сообщение
+        // TODO если срок действия токена истек, то перенаправление (поиск записи в БД в определенному полю)
         $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required|alpha_dash|max:255|min:6|confirmed',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first(); // firstOrFail
 
         if ( $user ) {
             $password_reset = $user->password_reset()->latest()->first();
 
-   /*$date = Carbon::parse('2016-09-17 11:00:00');
+   /*$date = Carbon::parse($password_reset->created_at);
     $now = Carbon::now();
+    // TOOD лучше в Model сделать возврат в нужном формате, если такого нету и вызывать оттуда метод
 
-    $diff = $date->diffInDays($now);*/
+    $diff = $date->diffInDays(Carbon::now());*/
 //TODO время сравнить с помощью методов карбон
 
             if( $password_reset != null && $password_reset->token == $request->token && (Carbon::now()->timestamp - Carbon::parse($password_reset->created_at)->timestamp) < (config('auth.passwords.users.expire') * 60) ) {

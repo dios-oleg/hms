@@ -48,8 +48,6 @@ Route::group(['middleware' => ['auth', 'leader' , 'blocked']], function () {
         Route::post('/', 'UserController@store')->name('users.store');
         Route::get('/{user}', 'UserController@edit')->name('users.edit');
         Route::put('/{user}', 'UserController@update')->name('users.update');
-        Route::get('/{user}/reset', 'PasswordController@sendLinkCreatePassword')->name('users.reset');
-        //Route::get('/statistics/{user}', 'UserController@statistics'); // TODO убрать или переделать
     });
 
 });
@@ -83,4 +81,3 @@ Route::group(['middleware' => 'guest'], function () {
 });
 
 Route::get('/home', 'HomeController@index')->name('home');
-

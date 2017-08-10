@@ -4,5 +4,11 @@ namespace App\Services;
 
 interface ISendMessage
 {
-    static public function sendMessage(App\Models\User $user);
+  /**
+  * Отправка сообщения (E-Mail или другого типа сообщения) конкретному пользователю системы
+  *
+  * @param App\Models\User $user
+  * @return void
+  */
+  static public function sendMessage(App\Models\User $user);
 }
