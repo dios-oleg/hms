@@ -23,7 +23,7 @@
 
 Route::get('/', 'AppController@index')->name('app');
 
-Route::group(['middleware' => ['auth', 'leader' , 'blocked']], function () {
+Route::group(['middleware' => ['auth', 'leader' , 'active']], function () {
     // Настройки
     Route::group(['prefix' => 'settings'], function(){
         Route::get('/', 'SystemController@index')->name('settings');
@@ -52,7 +52,7 @@ Route::group(['middleware' => ['auth', 'leader' , 'blocked']], function () {
 
 });
 
-Route::group(['middleware' => ['auth', 'blocked']], function () {
+Route::group(['middleware' => ['auth', 'active']], function () {
     // Страница пользователя
     Route::get('/profile', 'ProfileController@index')->name('profile');
     Route::put('/profile', 'ProfileController@update')->name('profile.update');

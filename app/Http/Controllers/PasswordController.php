@@ -12,7 +12,7 @@ class PasswordController extends Controller
 {
 
     /**
-     * Отобразит форму для ввода почты/логина для отправки письма на почту
+     * Отобразит форму для ввода почты для отправки письма на почту
      *
      * @return \Illuminate\Http\Response
      */
@@ -54,25 +54,26 @@ class PasswordController extends Controller
         return redirect()->route('users.edit', $user->id)->with(['success' => true, 'reset_password' => true]);
     }*/
     /**
-     * Отображает форму для ввода логина, с последующим восстановлением пароля
+     * Отображает форму для ввода нового пароля, с последующим восстановлением пароля.
      *
      * @param  String  $token
      * @return \Illuminate\Http\Response
      */
     public function resetPasswordForm($token = null)
     {
+      // проверка на токен (обязателен) и должен быть действительным
         return view('auth.passwords.reset', compact('token'));
     }
 
     /**
-     * Сбрасывает пароль при действительном токене и логине.
+     * Сбрасывает пароль при действительном токене.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function resetPassword(Request $request)
     {
-        // TODO если срок действия токена истек, то перенаправление (поиск записи в БД в определенному полю)
+        // TODO если срок действия токена истек, то перенаправление (поиск записи в БД в определенному полю) и сверка времени
         $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required|alpha_dash|max:255|min:6|confirmed',
@@ -88,7 +89,7 @@ class PasswordController extends Controller
     // TOOD лучше в Model сделать возврат в нужном формате, если такого нету и вызывать оттуда метод
 
     $diff = $date->diffInDays(Carbon::now());*/
-//TODO время сравнить с помощью методов карбон
+    //TODO время сравнить с помощью методов карбон, сверять лучше в отдельной проверке, типа Request
 
             if( $password_reset != null && $password_reset->token == $request->token && (Carbon::now()->timestamp - Carbon::parse($password_reset->created_at)->timestamp) < (config('auth.passwords.users.expire') * 60) ) {
                 $user->password = \Hash::make($request->password);

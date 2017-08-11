@@ -40,5 +40,4 @@ class SystemController extends Controller
 
         return redirect()->route('settings')->with(['success' => true]);
     }
-
 }

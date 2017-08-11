@@ -12,8 +12,6 @@
         @include('alerts.error', ['title' => 'Ошибка! Вы не можете сами себя заблокировать или изменить себе роль!'])
         {{--@include('alerts.error', ['title' => 'Ошибка! Нельзя оставить систему без администраторов!'])--}}
 
-        @include('alerts.success', ['title' => session('reset_password') ? 'Сообщение о восстановлении пароля было отправлено на почту!' : null])
-
         <div class="form-group">
             <div class="control-label col-sm-3">
                 <label>Email</label>

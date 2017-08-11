@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class Leader
+class RedirectIfBlocked
 {
     /**
      * Handle an incoming request.
@@ -15,8 +15,9 @@ class Leader
      */
     public function handle($request, Closure $next)
     {
-        if ($request->user()->cannot('is-leader')) {
-            return redirect('/home');
+        if ($request->user()->is_blocked) {
+            \Auth::logout();
+            return redirect()->route('auth.login.form');
         }
 
         return $next($request);

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Position;
 use Illuminate\Http\Request;
-use App\Http\Requests\UpdatePosition;
+use App\Http\Requests\SetPosition;
 
 class PositionController extends Controller
 {
@@ -16,7 +16,7 @@ class PositionController extends Controller
     public function index()
     {
         $positions = Position::paginate(10);
-        
+
         return view('positions.index', compact('positions'));
     }
 
@@ -33,13 +33,13 @@ class PositionController extends Controller
     /**
      * Сохранение новой должности.
      *
-     * @param  App\Http\Requests\UpdatePosition  $request
+     * @param  App\Http\Requests\SetPosition  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UpdatePosition $request)
+    public function store(SetPosition $request)
     {
         $position = Position::create($request->all());
-        
+
         return redirect()->route('positions')->with(['success' => true, 'title' => "Должность \"$position->name\" была успешно создана."]);
     }
 
@@ -57,14 +57,14 @@ class PositionController extends Controller
     /**
      * Обновление должности.
      *
-     * @param  App\Http\Requests\UpdatePosition  $request
+     * @param  App\Http\Requests\SetPosition  $request
      * @param  \App\Models\Position  $position
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePosition $request, Position $position)
+    public function update(SetPosition $request, Position $position)
     {
         $position->update($request->all());
-        
+
         return redirect()->route('positions.edit', $position)->with(['success' => true]);
     }
 
@@ -79,9 +79,9 @@ class PositionController extends Controller
         if( count($position->users) != 0) {
             return redirect()->route('positions.edit', $position)->with(['error' => true, 'title' => 'Должность не может быть удалена, т.к. за ней закреплены пользователи.']);
         }
-        
+
         $position->delete();
-        
+
         return redirect()->route('positions')->with(['success' => true, 'title' => "Должность \"$position->name\" (запись №{$position->id}) была успешно удалена."]);
     }
 }

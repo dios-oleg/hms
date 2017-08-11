@@ -58,8 +58,8 @@
                     </th>
                     <th>
                         Ф.И.О.
-                        <a href="{{ route('users', ['sort=name', 'order='.($parameters['sort'] == 'name' && $parameters['order'] == 'asc' ? 'desc' : 'asc')] ) }}">
-                            @if ($parameters['sort'] == 'name' && $parameters['order'] == 'asc')
+                        <a href="{{ route('users', ['sort=last_name', 'order='.($parameters['sort'] == 'last_name' && $parameters['order'] == 'asc' ? 'desc' : 'asc')] ) }}">
+                            @if ($parameters['sort'] == 'last_name' && $parameters['order'] == 'asc')
                                 <span class="glyphicon glyphicon-sort-by-alphabet-alt" aria-hidden="true"></span>
                             @else
                                 <span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"></span>

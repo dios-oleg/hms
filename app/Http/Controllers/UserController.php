@@ -27,9 +27,13 @@ class UserController extends Controller
             $query->where('position_id', $parameters['position']);
         }
 
-        if ($parameters['sort'] && $parameters['order']) {
-            $query->orderBy($parameters['sort'] == 'email' ? 'email' : 'last_name', $parameters['order'] == 'asc' ? 'asc' : 'desc' );
-        }
+        //if ($parameters['sort'] && $parameters['order']) {
+            $field = array_get($parameters, 'sort', 'id'); // email, last_name // FIXMI не задает значение по умолчанию 
+            $order = array_get($parameters, 'order', 'asc');
+            dd($order);
+            //$query->orderBy($field, $order);
+            //$query->orderBy($parameters['sort'] == 'email' ? 'email' : 'last_name', $parameters['order'] == 'asc' ? 'asc' : 'desc' );
+        //}
 
         $users = $query->paginate(10);
 
@@ -63,7 +67,7 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->position_id = $request->position;
         $user->save();
-        
+
         SendLinkSetPassword::sendMessage($user);
 
         return redirect()->route('users')->with(['success' => true]);

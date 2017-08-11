@@ -44,9 +44,4 @@ class ProfileController extends Controller
 
         return redirect()->route('profile')->with('success', true);
     }
-
-    public function statistics(){
-        // TODO отображение статистики отпусков
-    }
-
 }

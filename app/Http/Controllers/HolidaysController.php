@@ -19,7 +19,7 @@ class HolidaysController extends Controller
         if (empty($user)){
             $holidays = Holiday::all();
         }else{
-            $holidays =
+            //$holidays =
         }
 
         return $holidays;
