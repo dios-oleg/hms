@@ -16,9 +16,9 @@ class HolidaysController extends Controller
     public function index()
     {
         // TODO отображение всех заявок или определение вызова методов
-        if (empty($user)){
+        if (empty($user)) {
             $holidays = Holiday::all();
-        }else{
+        } else {
             //$holidays =
         }
 
@@ -49,7 +49,13 @@ class HolidaysController extends Controller
     {
         // TODO проверка значений и сохранение или предупреждение, если за год превышает количество дней отпуска. Но сохранить можно
         // редактировать может только владелец
-        dd($request);
+        //dd($request);
+            return \Auth::user();
+        
+    }
+    
+    public function storeAjax(){
+        
     }
 
     /**

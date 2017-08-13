@@ -46,7 +46,7 @@
     <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap-datetimepicker.min.js') }}"></script>
     <script src="{{ asset('js/fullcalendar.min.js') }}"></script>
-    <script src="{{ asset('js/ru.min.js') }}"></script>
+    <script src="{{ asset('js/ru.js') }}"></script>
 
     @hasSection('scripts')
         <script type="text/javascript">

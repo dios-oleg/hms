@@ -13,86 +13,78 @@
 
 @section('scripts')
 $(document).ready(function() {
+    
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    
+    //alert();
 
     $('#calendar').fullCalendar({
         locale: 'ru',
         businessHours: true,
         validRange: {
-            start: '2017-07-15', // TODO текущая дата
-            end: '2017-12-31' // TODO последний день года или следующий? когда составляется график отпусков?
+            start: moment().format('YYYY-MM-D'),
+            end: moment(new Date(moment().get('year'), 1, 31)).add(1, 'y').format('YYYY-MM-DD') // TODO последний день года или следующий? когда составляется график отпусков?
         },
         selectable: true,
         select: function(start, end){
-            // TODO задание отпуска и комментария
-            alert(start.date()+' '+end.date())
+            var comment = prompt('Вы указали период отпуска с ' + 
+                                    moment(start).format('DD.MM.YYYY') + 
+                                    ' по ' + moment(end).add(-1, 'd').format('DD.MM.YYYY') + 
+                                    '. Вы можете указать комментарий:', 'Трудовой отпуск');
+            
+            var eventData = {
+                title: comment,
+                start: start,
+                end: end,
+                backgroundColor: '#e4b01d',
+                textColor: '#332f2f',
+                borderColor: '#c6953a'
+                
+            };
+            
+            $('#calendar').fullCalendar('renderEvent', eventData, true);
+            
+            // TODO отправка информации в БД
+            var request = $.post("holidays", {data: this.eventData},  function( data ) {
+                    console.log(data.email);
+                });
+            
+            console.log('send to db');
+        },
+        eventDrop: function(event, delta, revertFunc) {
+            if (!confirm('Вы действительно желаете изменить период отпуска? Новый период с ' +
+                event.start.format('DD.MM.YYYY') + ' по ' +event.end.format('DD.MM.YYYY') + '.')) {
+                revertFunc();
+            }else{
+                // TODO отправка информации в БД
+                console.log('send to db');
+            }
         },
         header: {
             left: 'prev,next today',
             center: 'title',
-            right: 'month,listWeek,listMonth,listYear'
-        },
-        buttonText: {
-            today: 'сегодня',
+            right: 'month,listYear'
         },
         views: {
-            month: { buttonText: 'календарь' },
-            listWeek: { buttonText: 'список за неделю' },
-            listMonth: { buttonText: 'список за месяц' },
             listYear: { buttonText: 'список за год' }
         },
         editable: true,
-        events: [
-            {
-                title: 'All Day Event',
-                start: '2017-07-01'
+        /*eventSources: [
+            url: '/holidays',
+            type: 'GET',
+            data: {
+                // TODO token, email, password, type or page
+                //custom_param1: 'something',
+                //custom_param2: 'somethingelse'
             },
-            {
-                title: 'Long Event',
-                start: '2017-07-07',
-                end: '2017-07-10'
+            error: function() {
+                alert('there was an error while fetching events!');
             },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: '2017-07-09'
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: '2017-07-16'
-            },
-            {
-                title: 'Conference',
-                start: '2017-07-11',
-                end: '2017-07-13'
-            },
-            {
-                title: 'Meeting',
-                start: '2017-07-12',
-                end: '2017-07-12'
-            },
-            {
-                title: 'Lunch',
-                start: '2017-07-12'
-            },
-            {
-                title: 'Meeting',
-                start: '2017-07-12'
-            },
-            {
-                title: 'Happy Hour',
-                start: '2017-07-12'
-            },
-            {
-                title: 'Dinner',
-                start: '2017-07-12'
-            },
-            {
-                title: 'Birthday Party',
-                start: '2017-07-13'
-            }
-        ],
-
+        ]*/
     });
 
 
