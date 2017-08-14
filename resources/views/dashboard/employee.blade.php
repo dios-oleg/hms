@@ -26,8 +26,9 @@ $(document).ready(function() {
         locale: 'ru',
         businessHours: true,
         validRange: {
-            start: moment().format('YYYY-MM-D'),
-            end: moment(new Date(moment().get('year'), 1, 31)).add(1, 'y').format('YYYY-MM-DD') // TODO последний день года или следующий? когда составляется график отпусков?
+            start: moment().add(1, 'd').format('YYYY-MM-D'),
+            end: moment(new Date(moment().get('year'), 1, 1)).add(1, 'y').format('YYYY-MM-DD') // TODO последний день года или следующий? когда составляется график отпусков?
+            // TODO мб на следующий год можно указывать, когда последние два месяца года?
         },
         selectable: true,
         select: function(start, end){
@@ -43,17 +44,18 @@ $(document).ready(function() {
                 backgroundColor: '#e4b01d',
                 textColor: '#332f2f',
                 borderColor: '#c6953a'
-                
             };
             
             $('#calendar').fullCalendar('renderEvent', eventData, true);
             
-            // TODO отправка информации в БД
-            var request = $.post("holidays", {data: this.eventData},  function( data ) {
-                    console.log(data.email);
+            var request = $.post("holidays", {
+                    start_date: moment(start).format('YYYY-MM-DD'),
+                    end_date: moment(end).format('YYYY-MM-DD'),
+                    comment: comment
+                },  
+                function( data ) {
+                    console.log('Status created is ' + data.status);
                 });
-            
-            console.log('send to db');
         },
         eventDrop: function(event, delta, revertFunc) {
             if (!confirm('Вы действительно желаете изменить период отпуска? Новый период с ' +
@@ -78,8 +80,8 @@ $(document).ready(function() {
             type: 'GET',
             data: {
                 // TODO token, email, password, type or page
-                //custom_param1: 'something',
-                //custom_param2: 'somethingelse'
+                //start_date: 'something',
+                //end_date: 'somethingelse'
             },
             error: function() {
                 alert('there was an error while fetching events!');

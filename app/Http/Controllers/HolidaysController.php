@@ -35,7 +35,6 @@ class HolidaysController extends Controller
      */
     public function create()
     {
-        // TODO создание заявки, может только текущий пользователь для себя
         return view('holidays.create');
     }
 
@@ -48,16 +47,12 @@ class HolidaysController extends Controller
     public function store(Request $request)
     {
         // TODO проверка значений и сохранение или предупреждение, если за год превышает количество дней отпуска. Но сохранить можно
-        // редактировать может только владелец
-        //dd($request);
-            return \Auth::user();
+        $user = \Auth::user();
+        $user->holidays()->create($request->only('start_date', 'end_date', 'comment'));
         
+        return $request->ajax() ? \Response::json(['status' => true]) : redirect()->route('holidays'); 
     }
     
-    public function storeAjax(){
-        
-    }
-
     /**
      * Display the specified resource.
      *

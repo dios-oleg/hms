@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Holiday extends Model
 {
+    protected $fillable = ['start_date', 'end_date', 'comment'];
+    
     public function user()
     {
         return $this->belongsTo(User::class);
