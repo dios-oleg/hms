@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Position;
 use Illuminate\Http\Request;
-use App\Http\Requests\SetPosition;
+use App\Http\Requests\PositionRequest;
 
 class PositionController extends Controller
 {
@@ -33,10 +33,10 @@ class PositionController extends Controller
     /**
      * Сохранение новой должности.
      *
-     * @param  App\Http\Requests\SetPosition  $request
+     * @param  App\Http\Requests\PositionRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(SetPosition $request)
+    public function store(PositionRequest $request)
     {
         $position = Position::create($request->all());
 
@@ -57,11 +57,11 @@ class PositionController extends Controller
     /**
      * Обновление должности.
      *
-     * @param  App\Http\Requests\SetPosition  $request
+     * @param  App\Http\Requests\PositionRequest  $request
      * @param  \App\Models\Position  $position
      * @return \Illuminate\Http\Response
      */
-    public function update(SetPosition $request, Position $position)
+    public function update(PositionRequest $request, Position $position)
     {
         $position->update($request->all());
 

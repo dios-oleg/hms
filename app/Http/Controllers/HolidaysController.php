@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Holiday;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\HolidaysRequest;
 
 class HolidaysController extends Controller
 {
@@ -44,15 +45,15 @@ class HolidaysController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(HolidaysRequest $request)
     {
         // TODO проверка значений и сохранение или предупреждение, если за год превышает количество дней отпуска. Но сохранить можно
         $user = \Auth::user();
         $user->holidays()->create($request->only('start_date', 'end_date', 'comment'));
-        
-        return $request->ajax() ? \Response::json(['status' => true]) : redirect()->route('holidays'); 
+
+        return $request->ajax() ? \Response::json(['status' => true]) : redirect()->route('holidays');
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -62,7 +63,6 @@ class HolidaysController extends Controller
     public function show(Holiday $holiday)
     {
         // TODO Отображение заявки на отпуск и печать заявки
-        // TODO здесь же происходит задание статуса для заявки
 
         return ('holidays.show');
     }
