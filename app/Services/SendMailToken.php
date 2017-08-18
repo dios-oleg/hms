@@ -4,27 +4,35 @@ namespace App\Services;
 
 use App\Models\{User, Password_reset};
 use App\Mail\ResetPassword;
-use Illuminate\Support\Str;
 
-class SendMailToken 
+class SendMailToken
 {
     protected $user;
     protected $view;
     protected $subject;
-    protected $token;
-    
-    public function __construct(User $user, $view, $subject, $sizeToken = 60) 
+
+    /**
+    * Отправка сообщения пользователю системы с токеном
+    *
+    * @param App\Models\User
+    * @param String $view
+    * @param String $subject
+    * @param Integer $sizeToken
+    */
+    public function __construct(User $user, $view, $subject)
     {
         $this->user = $user;
         $this->user = $view;
         $this->user = $subject;
-        $this->token = Str::random($sizeToken);
     }
-    
-    public function send() 
+
+    /**
+    * Отправка сообщения пользователю системы с токеном
+    */
+    public function send()
     {
-        $password_reset = new Password_reset(['token' => $this->token]);
-        $user->password_reset()->save($password_reset);
-        \Mail::to($user->email)->queue(new ResetPassword($token, $view, $subject)); 
+        //$password_reset = new Password_reset();
+        $this->$user->password_reset()->save(['token' => \Str::random(60)]);
+        \Mail::to($user->email)->queue(new ResetPassword($this->user->password_reset->token, $view, $subject));
     }
 }
