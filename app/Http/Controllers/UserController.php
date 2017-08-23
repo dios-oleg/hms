@@ -69,7 +69,7 @@ class UserController extends Controller
 
         $token = new PasswordToken($user);
         $token->create();
-        \Mail::to($user->email)->queue(new SendToken($this->user->password_reset->token, 'emails.specify_password', 'Добро пожаловать в систему!'));
+        \Mail::to($user->email)->queue(new SendToken($user->password_reset->token, 'emails.specify_password', 'Добро пожаловать в систему!'));
 
         return redirect()->route('users')->with(['success' => true]);
     }

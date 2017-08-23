@@ -7,7 +7,7 @@ use App\Http\Requests\Authenticate;
 
 class AuthController extends Controller{
 
-    public function showLoginForm()
+    public function index()
     {
         return view('auth.login');
     }

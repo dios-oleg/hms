@@ -12,8 +12,8 @@ class SendToken extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     protected $token;
-    protected $view;
-    protected $subject;
+    public $view;
+    public $subject;
 
     /**
      * Create a new message instance.

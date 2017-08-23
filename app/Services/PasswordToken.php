@@ -2,18 +2,23 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Str;
+
 class PasswordToken
 {
     protected $user;
 
-    public function __construct(App\Models\User $user)
+    public function __construct(\App\Models\User $user)
     {
         $this->user = $user;
     }
 
     public function create($size = 60)
     {
-        $this->user->password_reset()->save(['token' => \Str::random($size)]);
+        $this->user->password_reset()->updateOrCreate(
+            ['id' => $this->user->id],
+            ['token' => Str::random($size)]
+        );
     }
 
     public function compare($token)

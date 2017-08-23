@@ -34,27 +34,15 @@ class PasswordController extends Controller
             'email' => 'required|email|exists:users,email',
         ]);
 
-        $user = \App\Models\User::where('email', $request->email)->first(); // TODO OrFail
-
+        $user = \App\Models\User::where('email', $request->email)->firstOrFail();
+        
         $token = new PasswordToken($user);
         $token->create();
-        \Mail::to($user->email)->queue(new SendToken($this->user->password_reset->token, 'emails.reset_password', 'Восстановление пароля!')); // change to SendToken
+        \Mail::to($user->email)->queue(new SendToken($user->password_reset->token, 'emails.reset_password', 'Восстановление пароля!')); // change to SendToken
 
         return view('auth.passwords.message');
     }
 
-    /**
-     * Отправит ссылку для задания пароля.
-     *
-     * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    /*public function sendLinkCreatePassword(User $user)
-    {
-        $this->sendMail($user);
-        // TODO удалить вместе с проверкой и отображением в представлении
-        return redirect()->route('users.edit', $user->id)->with(['success' => true, 'reset_password' => true]);
-    }*/
     /**
      * Отображает форму для ввода нового пароля, с последующим восстановлением пароля.
      *
