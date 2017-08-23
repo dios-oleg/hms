@@ -72,8 +72,8 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 });
 
 Route::group(['middleware' => 'guest'], function () {
-    Route::get('login', 'AuthController@showLoginForm')->name('auth.login.form');
-    Route::post('login', 'AuthController@authenticate')->name('auth.login');
+    Route::get('login', 'AuthController@index')->name('auth.login.form'); // TODO rename
+    Route::post('login', 'AuthController@authenticate')->name('auth.login'); // TODO rename
     Route::get('reset/{token?}', 'PasswordController@resetPasswordForm')->name('auth.reset.form');
     Route::post('reset', 'PasswordController@resetPassword')->name('auth.reset');
     Route::get('recovery', 'PasswordController@sendLinkResetPasswordForm')->name('auth.recovery');

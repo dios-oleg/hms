@@ -10,7 +10,7 @@ class AppController extends Controller
     public function index(Request $request) {
         if (Auth::check())  {
             // Для каждой роли свой dashboard
-            return view('dashboard.'.Auth()->user()->role, ['token' => Auth::user()->password_reset->valid_token]);
+            return view('dashboard.'.Auth()->user()->role);
 
             // Для руководителя отдельный dashboard
             /*if(Auth()->user()->can('is-leader')) {

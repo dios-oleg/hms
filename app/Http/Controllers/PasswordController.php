@@ -5,8 +5,8 @@ use Illuminate\Http\Request;
 use App\Models\{User, Password_reset};
 use Carbon\Carbon;
 use Illuminate\Support\Str;
-use App\Mail\ResetPassword;
-use App\Services\SendLinkResetPassword;
+use App\Mail\SendToken;
+use App\Services\PasswordToken;
 
 class PasswordController extends Controller
 {
@@ -36,7 +36,9 @@ class PasswordController extends Controller
 
         $user = \App\Models\User::where('email', $request->email)->first(); // TODO OrFail
 
-        SendLinkResetPassword::sendMessage($user);
+        $token = new PasswordToken($user);
+        $token->create();
+        \Mail::to($user->email)->queue(new SendToken($this->user->password_reset->token, 'emails.reset_password', 'Восстановление пароля!')); // change to SendToken
 
         return view('auth.passwords.message');
     }

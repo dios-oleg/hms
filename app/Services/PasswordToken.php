@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-class Token
+class PasswordToken
 {
     protected $user;
 
@@ -11,21 +11,22 @@ class Token
         $this->user = $user;
     }
 
-    public function createToken()
+    public function create($size = 60)
     {
-        $token = \Str::random($size);
-        $this->user->password_reset()->save(['token' => \Str::random(60)]);
+        $this->user->password_reset()->save(['token' => \Str::random($size)]);
     }
 
-    public function compareToken($token)
+    public function compare($token)
     {
-        return $user->password_reset->token === $token;
+        return $user->password_reset->token === $token; // FIXME а если нет записи?
     }
 
-    public function isValidToken()
+    public function isValid()
     {
         $user->password_reset->created_at;
         // проверка актуальности токена
         // TODO scope с параметрами для получения экземпляра пользователя или ее отсутствие при истекшем токене
     }
+
+    // TODO функция для проверки актуальности токена и полученного токена
 }

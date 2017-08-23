@@ -7,7 +7,8 @@ use App\Models\Position;
 use App\Enum\Roles;
 use Illuminate\Http\Request;
 use App\Http\Requests\{UpdateUser, StoreUser};
-use App\Services\SendLinkSetPassword;
+use App\Mail\SendToken;
+use App\Services\PasswordToken;
 
 class UserController extends Controller
 {
@@ -18,7 +19,9 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $parameters = $request->only('email', 'position', 'sort', 'order');
+        $parameters = $request->only('email', 'position' /*, 'sort', 'order'*/);
+        $parameters['sort'] = $request->input('sort', 'email');
+        $parameters['order'] = $request->input('order', 'asc');
 
         $query = User::query();
         $query->where('email', 'like', '%'.$parameters['email'].'%');
@@ -27,13 +30,9 @@ class UserController extends Controller
             $query->where('position_id', $parameters['position']);
         }
 
-        //if ($parameters['sort'] && $parameters['order']) {
-            $field = array_get($parameters, 'sort', 'id'); // email, last_name // FIXMI не задает значение по умолчанию 
-            $order = array_get($parameters, 'order', 'asc');
-            dd($order);
-            //$query->orderBy($field, $order);
-            //$query->orderBy($parameters['sort'] == 'email' ? 'email' : 'last_name', $parameters['order'] == 'asc' ? 'asc' : 'desc' );
-        //}
+        $field = array_get($parameters, 'sort'); // не задает значение по умолчанию
+        $order = array_get($parameters, 'order');
+        $query->orderBy($field, $order);
 
         $users = $query->paginate(10);
 
@@ -68,7 +67,9 @@ class UserController extends Controller
         $user->position_id = $request->position;
         $user->save();
 
-        SendLinkSetPassword::sendMessage($user);
+        $token = new PasswordToken($user);
+        $token->create();
+        \Mail::to($user->email)->queue(new SendToken($this->user->password_reset->token, 'emails.specify_password', 'Добро пожаловать в систему!'));
 
         return redirect()->route('users')->with(['success' => true]);
     }
@@ -96,18 +97,19 @@ class UserController extends Controller
      */
     public function update(UpdateUser $request, User $user)
     {
-        //if( !User::isNotLastLeader() && ($request->blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id ){ // нельзя оставить систему без администратора // TODO проверка в отдельном методе и месте
-        if( ($request->blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id ){ // пользователь не может сам себя заблокировать или изменить роль
+        if( !User::isNotLastLeader() && ($request->blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id )
+        { // TODO нельзя оставить систему без администратора // TODO проверка в отдельном методе и месте // to canChange
+        //if( ($request->blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id ){ // пользователь не может сам себя заблокировать или изменить роль
             return redirect()->route('users.edit', $user->id)->with(['error' => true]);
-        }else{
+        } else {
             $user->role = $request->role;
             $user->is_blocked = (bool) $request->blocked;
             $user->comment = $request->blocked ? $request->comment : NULL;
         }
 
-        $user->position_id = $request->position;
+        $user->position_id = $request->position; // TODO is move to fill?
+        $user->fill($request->only('first_name', 'last_name', 'last_name_print', 'patronymic', 'address'));
         $user->save();
-        $user->update($request->only('first_name', 'last_name', 'last_name_print', 'patronymic', 'address'));
 
         return redirect()->route('users.edit', $user->id)->with(['success' => true]);
     }
