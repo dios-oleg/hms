@@ -9,8 +9,7 @@
         {{ method_field('PUT') }}
 
         @include('alerts.errors', ['title' => 'Ошибка! Данные не были обновлены!'])
-        @include('alerts.error', ['title' => 'Ошибка! Вы не можете сами себя заблокировать или изменить себе роль!'])
-        {{--@include('alerts.error', ['title' => 'Ошибка! Нельзя оставить систему без администраторов!'])--}}
+        @include('alerts.error', ['title' => 'Ошибка! Нельзя оставить систему без администраторов!'])
 
         <div class="form-group">
             <div class="control-label col-sm-3">

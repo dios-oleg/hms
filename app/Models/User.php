@@ -43,20 +43,11 @@ class User extends Authenticatable
     }
 
     public function password_reset() {
-        return $this->hasOne(\App\Models\Password_reset::class, 'id'); 
+        return $this->hasOne(\App\Models\Password_reset::class, 'id');
     }
 
     public function scopeActive($query)
     {
         return $query->where('is_blocked', false);
     }
-
-    static public function isNotLastLeader() {
-        return self::active()->where('role', Roles::LEADER)->count() > 1;
-    }
-
-    static public function isUndefinedLeader() {
-        return self::active()->where('role', Roles::LEADER)->count() == 0;
-    }
-
 }

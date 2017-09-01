@@ -9,12 +9,14 @@ use Illuminate\Http\Request;
 use App\Http\Requests\{UpdateUser, StoreUser};
 use App\Mail\SendToken;
 use App\Services\PasswordToken;
+use App\Services\SystemStatutes;
 
 class UserController extends Controller
 {
     /**
      * Отобразит список пользователей.
      *
+     * @param Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -57,7 +59,7 @@ class UserController extends Controller
     /**
      * Сохранит нового пользователя в БД.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreUser  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreUser $request)
@@ -67,8 +69,7 @@ class UserController extends Controller
         $user->position_id = $request->position;
         $user->save();
 
-        $token = new PasswordToken($user);
-        $token->create();
+        PasswordToken::create($user);
         \Mail::to($user->email)->queue(new SendToken($user->password_reset->token, 'emails.specify_password', 'Добро пожаловать в систему!'));
 
         return redirect()->route('users')->with(['success' => true]);
@@ -77,7 +78,7 @@ class UserController extends Controller
     /**
      * Отображение страницы для редактирования информации пользователя.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
     public function edit(User $user)
@@ -92,14 +93,12 @@ class UserController extends Controller
      * Обновит информацию пользователя.
      *
      * @param  \App\Http\Requests\UpdateUser  $request
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateUser $request, User $user)
     {
-        if( !User::isNotLastLeader() && ($request->blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id )
-        { // TODO нельзя оставить систему без администратора // TODO проверка в отдельном методе и месте // to canChange
-        //if( ($request->blocked || $request->role != Roles::LEADER) && $user->id == \Auth::user()->id ){ // пользователь не может сам себя заблокировать или изменить роль
+        if (SystemStatutes::canChangeRole($user->id, $request->role, $request->blocked)) {
             return redirect()->route('users.edit', $user->id)->with(['error' => true]);
         } else {
             $user->role = $request->role;
@@ -107,7 +106,7 @@ class UserController extends Controller
             $user->comment = $request->blocked ? $request->comment : NULL;
         }
 
-        $user->position_id = $request->position; // TODO is move to fill?
+        $user->position_id = $request->position;
         $user->fill($request->only('first_name', 'last_name', 'last_name_print', 'patronymic', 'address'));
         $user->save();
 
