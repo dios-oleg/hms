@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdatePassword extends FormRequest
+class ResetPassword extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class UpdatePassword extends FormRequest
      */
     public function authorize()
     {
-        return true; // TODO должен быть авторизован
+        return true;
     }
 
     /**
@@ -24,15 +24,17 @@ class UpdatePassword extends FormRequest
     public function rules()
     {
         return [
-            //'old_password' => 'required|max:255|password', // TODO можем передать значение пароля и с ним сверять
-            //'password' => 'required|alpha_dash|max:255|min:6|confirmed|different:old_password',
+            'password' => 'required|alpha_dash|max:255|min:8|confirmed',
+            'token' => 'required|token'
         ];
     }
-    
-    /*public function checkPassword($attribute, $value, $parameters, $validator) {
-        dd($parameters);
-            return $value == 'foo';
-    }*/
-    
+
+    public function messages() {
+        return [
+            'token.required' => 'Токен был утерян. Попробуйте повторно восстановить пароль.',
+            'token.token' => 'Срок действия токена истек. Попробуйте повторно восстановить пароль.',
+        ];
+    }
+
     // TODO переводы сообщений в отдельный файл, а проверку эту мб ваще убрать? или как-то добавить сравнение со значение из БД
 }

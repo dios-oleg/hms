@@ -3,35 +3,51 @@
 namespace App\Services;
 
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class PasswordToken
 {
-    protected $user;
-
-    public function __construct(\App\Models\User $user)
+    /**
+     * Создает токен у указанного пользователя для восстановления пароля.
+     * @param  App\Models\User  $user
+     * @param  integer $tokenSize
+     * @return void
+     */
+    public static function create($user, $tokenSize = 60)
     {
-        $this->user = $user;
-    }
-
-    public function create($size = 60)
-    {
-        $this->user->password_reset()->updateOrCreate(
-            ['id' => $this->user->id],
-            ['token' => Str::random($size)]
+        $user->password_reset()->updateOrCreate(
+            ['id' => $user->id],
+            ['token' => Str::random($tokenSize)]
         );
     }
 
-    public function compare($token)
+    /**
+     * Возвращает экземпляр пользователя в случае существования модели.
+     * @param  String $token Токен
+     * @return App\Models\User
+     */
+    public static function getUserByToken($token)
     {
-        return $user->password_reset->token === $token; // FIXME а если нет записи?
+        return self::isValid($token, true);
     }
 
-    public function isValid()
-    {
-        $user->password_reset->created_at;
-        // проверка актуальности токена
-        // TODO scope с параметрами для получения экземпляра пользователя или ее отсутствие при истекшем токене
-    }
+    /**
+     * Проверят существование токена и его актуальность
+     * @param  string  $token
+     * @param  boolean  $returnUserModel Возвратить модель пользователя, если она существует
+     * @return boolean | App\Models\User  Возвращает true, если токен актуальный. Возвращает модель, при ее существовании
+     */
+    public static function isValid($token, $returnUserModel = false) {
+        $record = \App\Models\Password_reset::where('token', $token)->first();
 
-    // TODO функция для проверки актуальности токена и полученного токена
+        if ($record && strcmp($record->token, $token) == 0) {
+          $date = Carbon::parse($record->created_at);
+          $now = Carbon::now();
+          $result = $date->diffInSeconds(Carbon::now()) < (config('auth.passwords.users.expire') * 60);
+
+          return  $returnUserModel && $result ? $record->user : $result;
+        }
+
+        return null;
+    }
 }

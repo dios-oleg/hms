@@ -25,22 +25,20 @@ class ProfileController extends Controller
      */
     public function update(UpdateProfile $request)
     {
-        // TODO забыл сделать обязательное подтверждение для изменения личных данных, нужно ввести пароль
-
         $user = \Auth::user();
 
         // Если введен новый пароль, то осуществляется проверка.
         if ( $request->password ) {
             $this->validate($request, [
                 'old_password' => 'required|password',
-                'password' => 'confirmed|min:8|max:255|different:old_password',
+                'password' => 'confirmed|min:8|max:255|alpha_dash|different:old_password',
             ]);
 
             $user->password = \Hash::make($request->password);
-            $user->save();
         }
 
-        $user->update($request->all());
+        $user->fill($request->all());
+        $user->save();
 
         return redirect()->route('profile')->with('success', true);
     }

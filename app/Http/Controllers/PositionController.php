@@ -15,9 +15,7 @@ class PositionController extends Controller
      */
     public function index()
     {
-        $positions = Position::paginate(10);
-
-        return view('positions.index', compact('positions'));
+        return view('positions.index', ['positions' => Position::paginate(10)]);
     }
 
     /**
@@ -40,7 +38,10 @@ class PositionController extends Controller
     {
         $position = Position::create($request->all());
 
-        return redirect()->route('positions')->with(['success' => true, 'title' => "Должность \"$position->name\" была успешно создана."]);
+        return redirect()->route('positions')->with([
+          'success' => true,
+          'title' => "Должность \"$position->name\" была успешно создана."
+        ]);
     }
 
     /**
@@ -76,12 +77,18 @@ class PositionController extends Controller
      */
     public function destroy(Position $position)
     {
-        if( count($position->users) != 0) {
-            return redirect()->route('positions.edit', $position)->with(['error' => true, 'title' => 'Должность не может быть удалена, т.к. за ней закреплены пользователи.']);
+        if( $position->users->count() != 0) {
+            return redirect()->route('positions.edit', $position)->with([
+              'error' => true,
+              'title' => 'Должность не может быть удалена, т.к. за ней закреплены пользователи.'
+            ]);
         }
 
         $position->delete();
 
-        return redirect()->route('positions')->with(['success' => true, 'title' => "Должность \"$position->name\" (запись №{$position->id}) была успешно удалена."]);
+        return redirect()->route('positions')->with([
+          'success' => true,
+          'title' => "Должность \"$position->name\" (запись №{$position->id}) была успешно удалена."
+        ]);
     }
 }

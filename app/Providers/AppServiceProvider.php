@@ -15,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
     {
         \Validator::resolver(function($translator, $data, $rules, $messages)
         {
-          return new \App\Http\Requests\PasswordValidator($translator, $data, $rules, $messages);
+          return new \App\Http\Requests\ApplicationValidator($translator, $data, $rules, $messages);
         });
     }
 

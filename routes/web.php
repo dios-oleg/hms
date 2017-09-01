@@ -74,10 +74,10 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 Route::group(['middleware' => 'guest'], function () {
     Route::get('login', 'AuthController@index')->name('auth.login.form'); // TODO rename
     Route::post('login', 'AuthController@authenticate')->name('auth.login'); // TODO rename
-    Route::get('reset/{token?}', 'PasswordController@resetPasswordForm')->name('auth.reset.form');
-    Route::post('reset', 'PasswordController@resetPassword')->name('auth.reset');
-    Route::get('recovery', 'PasswordController@sendLinkResetPasswordForm')->name('auth.recovery');
-    Route::post('recovery', 'PasswordController@sendLinkResetPassword')->name('auth.sendmail');
+    Route::get('reset/{token}', 'ResetPasswordController@newPasswordForm')->name('auth.reset.form');
+    Route::post('reset', 'ResetPasswordController@reset')->name('auth.reset');
+    Route::get('recovery', 'ResetPasswordController@emailForm')->name('auth.recovery');
+    Route::post('recovery', 'ResetPasswordController@sendLink')->name('auth.sendmail');
 });
 
 Route::get('/home', 'HomeController@index')->name('home');

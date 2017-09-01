@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SystemParameter;
-use Illuminate\Http\Request;
+use App\Http\Requests\UpdateSystemParameter;
 
 class SystemController extends Controller
 {
@@ -25,16 +25,11 @@ class SystemController extends Controller
     /**
      * Обновляет значение свойства Системы.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\SystemParameter  $systemParameter
+     * @param  App\Http\Requests\UpdateSystemParameter  $systemParameter
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SystemParameter $parameter)
+    public function update(UpdateSystemParameter $request, SystemParameter $parameter)
     {
-        $this->validate($request, [
-            'value' => 'required'
-        ]);
-
         $parameter->value = $request->value;
         $parameter->save();
 

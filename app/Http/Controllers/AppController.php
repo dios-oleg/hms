@@ -8,16 +8,13 @@ use Illuminate\Support\Facades\Auth;
 class AppController extends Controller
 {
     public function index(Request $request) {
-        if (Auth::check())  {
-            // Для каждой роли свой dashboard
+        if (Auth::check()) {
+            // Для каждой роли свой dashboard.
             return view('dashboard.'.Auth()->user()->role);
 
-            // Для руководителя отдельный dashboard
-            /*if(Auth()->user()->can('is-leader')) {
-                return view('dashboard.leader');
-            }
-
-            return view('dashboard.employee');
+            /*
+            // Для руководителя отдельный dashboard.
+            return (Auth()->user()->can('is-leader')) ? view('dashboard.leader') : view('dashboard.employee');
             */
         }
 
