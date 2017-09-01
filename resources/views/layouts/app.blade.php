@@ -55,5 +55,10 @@
             @show
         </script>
     @endif
+
+    @hasSection('scripts_list')
+        @section('scripts_list')
+        @show
+    @endif
 </body>
 </html>

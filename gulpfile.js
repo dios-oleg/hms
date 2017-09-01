@@ -7,7 +7,7 @@ var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var del = require('del');
 
-gulp.task('default', ['less', 'js-bs', 'js', 'bs-select', 'scss', 'css']);
+gulp.task('default', ['less', 'js-bs', 'js', 'bs-select', 'scss', 'css', 'app-js']);
 
 gulp.task('less', function(){
 
@@ -54,6 +54,15 @@ gulp.task('js', function(){
         'resources/bower_components/fullcalendar/dist/locale/ru.js'
     ])
         .pipe(gulp.dest('public/js'));
+});
+
+gulp.task('app-js', function(){
+    return gulp.src([
+        'resources/assets/js/employee_dashboard.js',
+    ])
+    .pipe(uglifyjs())
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest('public/js'));
 });
 
 gulp.task('css', function(){
